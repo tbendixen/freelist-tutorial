@@ -11,7 +11,7 @@ Repository for:
 contains item scale data as well as various demographic information. See main repository for further
 details (Wave 1): https://github.com/bgpurzycki/Evolution-of-Religion-and-Morality
 
-`freelist_tutorial.R` reproduces the full main manuscript, including model fits, tables, and figures.
+`freelist_tutorial.Rmd` reproduces the full main manuscript, including model fits, tables, and figures.
 
 `freelist_tutorial_appendix.Rmd` reproduces the appendices, including model fits, tables, and figures.
 Note that the appendix script depends on having fitted all models from the 
