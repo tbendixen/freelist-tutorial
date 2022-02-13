@@ -1,0 +1,1381 @@
+---
+title: 'Cognitive and cultural models in psychological science: A tutorial on modeling free-list data as a dependent variable in Bayesian regression'
+shorttitle: 'Free-list tutorial'
+author:
+  - name: 'Theiss Bendixen'
+    affiliation: "a"
+    corresponding: yes
+    email: 'tb@cas.au.dk'
+  - name: 'Benjamin Grant Purzycki'
+    affiliation: "a"
+    email: 'bgpurzycki@gmail.com'
+affiliation:
+  - id: a
+    institution: '\textit{Department of the Study of Religion, Aarhus University, Denmark}'
+abstract: \noindent Assessing relationships between culture and cognition is central to psychological science. To this end, free-listing is a useful methodological instrument. To facilitate its wider use, we here present the free-list method along with some of its many applications and offer a tutorial on how to prepare and statistically model free-list data as a dependent variable in Bayesian regression using openly available data and code. We further demonstrate the real-world utility of the outlined workflow by modeling within-subject agreement between a free-list task and a corollary item response scale on religious beliefs with a cross-culturally diverse sample. Overall, we fail to find a statistical association between these two instruments, an original empirical finding that calls for further inquiry into identifying the cognitive processes that item response scales and free-list tasks tap into. Throughout, we argue that free-listing is an unambiguous measure of pools of cognitive and cultural information and that the free-list method therefore has broad potential across the social sciences aiming to measure and model individual-level and cross-cultural variation in mental representations.
+keywords: cognitive anthropology, cross-cultural psychology, free-listing, item response scale, zero-one inflated beta regression
+class: doc
+output:
+  papaja::apa6_pdf: 
+    highlight: default # intro to papaja: https://crsh.github.io/papaja_man/introduction.html
+    keep_tex: yes
+header-includes:
+   - \usepackage{float} # keeps figures and tables in place
+lineno: yes
+figsintext: true
+numbersections: true
+bibliography: [tutorial-bib.bib, grateful-refs.bib]
+---
+```{r lockfile, include=FALSE}
+# to initialize and embed the package environment - generates the call renv::use(...) below
+# renv::embed()
+
+renv::use(
+  "BH@1.75.0-0",
+  "Brobdingnag@1.2-6",
+  "DBI@1.1.2",
+  "DT@0.20",
+  "GGally@2.1.2",
+  "HDInterval@0.2.2",
+  "MASS@7.3-54",
+  "Matrix@1.3-4",
+  "Pakillo/grateful@HEAD",
+  "R6@2.5.1",
+  "RColorBrewer@1.1-2",
+  "Rcpp@1.0.8",
+  "RcppEigen@0.3.3.9.1",
+  "RcppParallel@5.1.5",
+  "StanHeaders@2.21.0-7",
+  "abind@1.4-5",
+  "alastair-JL/AnthroTools@HEAD",
+  "arrayhelpers@1.1-0",
+  "askpass@1.1",
+  "assertthat@0.2.1",
+  "backports@1.4.1",
+  "base64enc@0.1-3",
+  "bayesplot@1.8.1",
+  "bdsmatrix@1.3-4",
+  "bit64@4.0.5",
+  "bit@4.0.4",
+  "blob@1.2.2",
+  "bookdown@0.24",
+  "boot@1.3-28",
+  "bridgesampling@1.1-2",
+  "brms@2.16.3",
+  "bslib@0.3.1",
+  "cachem@1.0.6",
+  "callr@3.7.0",
+  "cellranger@1.1.0",
+  "checkmate@2.0.0",
+  "cli@3.1.1",
+  "clipr@0.7.1",
+  "coda@0.19-4",
+  "codetools@0.2-18",
+  "colorspace@2.0-2",
+  "colourpicker@1.1.1",
+  "commonmark@1.7",
+  "cpp11@0.4.2",
+  "crayon@1.4.2",
+  "crosstalk@1.2.0",
+  "crsh/papaja@HEAD",
+  "curl@4.3.2",
+  "data.table@1.14.2",
+  "dbplyr@2.1.1",
+  "desc@1.4.0",
+  "digest@0.6.29",
+  "distributional@0.3.0",
+  "dplyr@1.0.7",
+  "dtplyr@1.2.1",
+  "dygraphs@1.1.1.6",
+  "ellipsis@0.3.2",
+  "evaluate@0.14",
+  "extraDistr@1.9.1",
+  "fansi@1.0.2",
+  "farver@2.1.0",
+  "fastmap@1.1.0",
+  "finalfit@1.0.4",
+  "fontawesome@0.2.2",
+  "forcats@0.5.1",
+  "fs@1.5.2",
+  "future@1.23.0",
+  "gargle@1.2.0",
+  "generics@0.1.2",
+  "ggExtra@0.9",
+  "ggdist@3.0.1",
+  "ggplot2@3.3.5",
+  "ggridges@0.5.3",
+  "globals@0.14.0",
+  "glue@1.6.1",
+  "googledrive@2.0.0",
+  "googlesheets4@1.0.0",
+  "gridExtra@2.3",
+  "gtable@0.3.0",
+  "gtools@3.9.2",
+  "haven@2.4.3",
+  "highr@0.9",
+  "hms@1.1.1",
+  "htmltools@0.5.2",
+  "htmlwidgets@1.5.4",
+  "httpuv@1.6.5",
+  "httr@1.4.2",
+  "ids@1.0.1",
+  "igraph@1.2.11",
+  "inline@0.3.19",
+  "isoband@0.2.5",
+  "jquerylib@0.1.4",
+  "jsonlite@1.7.3",
+  "knitr@1.37",
+  "labeling@0.4.2",
+  "later@1.3.0",
+  "lattice@0.20-45",
+  "lazyeval@0.2.2",
+  "lifecycle@1.0.1",
+  "listenv@0.8.0",
+  "lme4@1.1-27.1",
+  "loo@2.4.1",
+  "lubridate@1.8.0",
+  "magrittr@2.0.2",
+  "markdown@1.1",
+  "matrixStats@0.61.0",
+  "mgcv@1.8-38",
+  "mice@3.14.0",
+  "mime@0.12",
+  "miniUI@0.1.1.1",
+  "minqa@1.2.4",
+  "modelr@0.1.8",
+  "munsell@0.5.0",
+  "mvtnorm@1.1-3",
+  "nleqslv@3.3.2",
+  "nlme@3.1-153",
+  "nloptr@1.2.2.2",
+  "numDeriv@2016.8-1.1",
+  "openssl@1.4.5",
+  "pROC@1.18.0",
+  "packrat@0.7.0",
+  "parallelly@1.29.0",
+  "patchwork@1.1.1",
+  "pillar@1.7.0",
+  "pkgbuild@1.3.1",
+  "pkgconfig@2.0.3",
+  "plyr@1.8.6",
+  "posterior@1.2.0",
+  "prettyunits@1.1.1",
+  "processx@3.5.2",
+  "progress@1.2.2",
+  "promises@1.2.0.1",
+  "ps@1.6.0",
+  "purrr@0.3.4",
+  "rappdirs@0.3.3",
+  "readr@2.1.1",
+  "readxl@1.3.1",
+  "rematch2@2.1.2",
+  "rematch@1.0.1",
+  "remotes@2.4.2",
+  "renv@0.15.2",
+  "reprex@2.0.1",
+  "reshape2@1.4.4",
+  "reshape@0.8.8",
+  "rlang@1.0.1",
+  "rmarkdown@2.11",
+  "rmdfiltr@0.1.3",
+  "rprojroot@2.0.2",
+  "rsconnect@0.8.25",
+  "rstan@2.21.3",
+  "rstantools@2.1.1",
+  "rstudioapi@0.13",
+  "rvest@1.0.2",
+  "sass@0.4.0",
+  "scales@1.1.1",
+  "selectr@0.4-2",
+  "shiny@1.7.1",
+  "shinyjs@2.1.0",
+  "shinystan@2.5.0",
+  "shinythemes@1.2.0",
+  "sourcetools@0.1.7",
+  "stringi@1.7.6",
+  "stringr@1.4.0",
+  "survival@3.2-13",
+  "svUnit@1.0.6",
+  "sys@3.4",
+  "tensorA@0.36.2",
+  "threejs@0.3.3",
+  "tibble@3.1.6",
+  "tidybayes@3.0.2",
+  "tidymodels/broom@HEAD",
+  "tidyr@1.2.0",
+  "tidyselect@1.1.1",
+  "tidyverse@1.3.1",
+  "tinytex@0.36",
+  "tzdb@0.2.0",
+  "utf8@1.2.2",
+  "uuid@1.0-3",
+  "vctrs@0.3.8",
+  "viridisLite@0.4.0",
+  "vroom@1.5.7",
+  "withr@2.4.3",
+  "xfun@0.29",
+  "xml2@1.3.2",
+  "xtable@1.8-4",
+  "xts@0.12.1",
+  "yaml@2.2.2",
+  "zip@2.2.0",
+  "zoo@1.8-9"
+)
+```
+
+```{r load, message=FALSE, warning=FALSE, cache=FALSE, include=FALSE, results="hide"}
+### Load packages
+library(AnthroTools) # for free-list data analysis
+library(papaja) # for APA template for R Markdown
+library(brms) # for Bayesian multilevel modeling
+library(ggplot2) # for plotting
+library(tidyverse) # for plotting and wrangling
+library(bayesplot) # for plotting
+library(tidybayes) # for plotting and wrangling
+library(modelr)  # for plotting
+library(RColorBrewer) # for plotting
+library(patchwork) # for panel plots
+library(finalfit) # for the round_tidy function, ensures trailing zeros are kept in rounding
+library(ggExtra) # for plotting of marginal distribution
+library(rstan) # for fitting Stan models 
+
+### Increase memory limit
+memory.limit(size=56000)
+
+### RStan and loo global options
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = TRUE)
+
+### Load data
+data <- read.csv("FreeList_CERC_V1.0.csv", sep=";") # Free-list data
+cerc <- read.csv("CERC Dataset (Wave 1) Version 6.0.csv", sep=";") # Demographic and scale data
+
+# if (file.exists("all_main_mods.RData")) base::load(file = "all_main_mods.RData") # loading all main models after fitting, if desired
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  cache = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  error = TRUE,
+  cache.comments = FALSE
+)
+
+```
+
+\newpage
+
+# Introduction
+
+\noindent Assessing relationships between culture and cognition is central to psychological science. This is further emphasized by the recent surge in cross-cultural behavioral and psychological research [e.g., @barrett_deciding_2020; @broesch_navigating_2020]. Developing and applying valid measures of inter-individual and inter-group variation in cognitive and cultural models---including values, attitudes, and beliefs---is therefore critical [@dandrade_1987; @dandrade_development_1995].
+
+To that end, item response scales are ubiquitous across the social sciences. However, item response scales are not unproblematic[^irt]. For instance, psychometricians have long noted that arbitrary structural features of scales such as the number, order, and difficulty of response options and items systematically influence participants' response patterns [e.g., @haaf_items_2020; @krosnick_question_2009; @panter_psychometrics_1992; @sahin_effect_2021]. In cross-cultural settings, item response scales have also proven difficult to administer in non-numerate field sites [@purzycki_cross-cultural_2016; @purzycki_moralization_bias; @quinlan2017freelisting]. Further, while cognitive anthropologists have continually emphasized the importance of obtaining cross-task and construct validity using a diversity of instruments [e.g., @dandrade_development_1995; @dressler_measuring_2005; @furlow2003comparing; @romney1986culture], item scales are rarely validated using alternative methods of measurement.
+
+[^irt]: For a principled approach to measuring cultural models using item response theory, see @bunce_interethnic_2017.
+
+One such alternative method is free-listing. In a free-list task, participants are simply invited to list their associations on some topic. The list can---but need not---be capped at some limit. The listed items are then thematically coded according to a specified level of granularity adapted to the particular research goal at hand. Items listed earlier are typically easier to access or recall, and thus constitute a form of *cognitive* salience [@chaves_what_2019; @romney1964cognitive]. Further, given a valid topic, items higher up on an individual's list tend to also be more prevalent across lists drawn from the same sample. This makes the free-list task an unambiguous measure of cultural information [e.g., @bendixen_minds_nodate; @purzycki_bendixen_tuva; @purzyckimorality; @quinlan2017freelisting; cf., @dandrade_development_1995 p. 212-217 for a general discussion of 'cultural consensus']. These properties make free-listing a promising measure of inter-individual and cross-cultural cognitive models in psychological science.
+
+While free-list data lend themselves to a host of analytic approaches [e.g., @quinlan2017freelisting; @smith_using_1993], free-lists are often mainly used for descriptive or exploratory purposes or for informing downstream item scale construction. Free-listing has seen widespread use in a range of sub-disciplines within cognitive anthropology and psychology [for an overview, see @russellresearch, p. 235-238], including -- but not limited to -- ethnobiology [e.g., @chaves_what_2019; @fremout_2021; @mcnamara2021; @quinlan2005], semantics [e.g., @HENLEY1969176;  @smith_salience_1997; @smith_salience_1995], as well as the study of spiritual and theistic beliefs and practices [e.g., @atran_folkecology_2002; @mcnamara_gods_2021; @purzycki2011tyvan; @purzycki2013toward; @purzycki2018buddhism; @purzycki_buddha; @singh2019small;@singh_why_2020; @turpin_2020; @willard_rewarding_2020]. But recent work has demonstrated the promise of more principled statistical modeling of free-list data, for instance as an independent variable in regression models [e.g., @purzyckimorality; @white_karma_2019] and in semantic [e.g., @levine_theories_2015] and social [e.g., redhead_mcelreath_ross_2021] network analysis. Some studies employ free-list data as a dependent variable and, for instance, compare the number of items listed between groups [e.g., @brewer2002] or model the presence of some target item [e.g., @purzycki_bendixen_tuva; @purzycki_breaches_2020; @white_karma_2019] as a function of some predictor(s) or following experimental manipulation.
+
+When research questions pertain to the psychological salience of some particular concept or item, coded free-list data can be converted into *salience scores* [@smith_using_1993; @smith_salience_1997; @quinlan2017freelisting]. Salience scores range from 0 (i.e., target item not listed) to 1 (i.e., target item listed first) with intermediate values representing the target item's order of listing (i.e., a higher score means that the target item is listed earlier), taking into account the total number of items that a participant lists (see Part Two for formula). Therefore, while modeling presence and absence of a target item might be justifiable on certain theoretical grounds, it is practically akin to dichotomizing a continuous variable and hence discarding information [e.g., @ragland_dichotomizing_1992]. At the same time, distributions of data bound by 0 and 1, and where 0 and 1 are valid values, are generally not compatible with common assumptions of popular statistical procedures [@cribari-neto_inflated_2019; @douma_analysing_2019; @kubinec_2020; @liu_zoib_2015; @liu_zoib_bayes; @liu_zero-one-ated_2020; @menezes_parametric_2021; @ospina_general_2012; @santos_bayesian_2015; @queiroz_broad_2021]. This poses challenges to analysts who want to model free-list salience scores as a dependent variable and calls for general guidelines on how to go about modeling salience scores and similar zero-one inflated and bounded data. We offer one such set of guidelines here.
+
+This paper has two main parts. In Part One, we outline how to calculate and statistically model salience scores from a free-list task as a dependent variable in Bayesian regression [for introductions to Bayesian data analysis, see @bda3; @bayes_rules; @kruschke2014doing; @kruschke_bayesian_2018; @mcelreath_statistical_2020]. Specifically, we suggest the zero-one inflated beta distribution as likelihood model and illustrate its utility compared to popular alternatives using simulated synthetic data. We also discuss approaches to modeling free-list data without transforming the data into salience scores. 
+
+In Part Two, we apply the presented tools in a real-world case study, including steps in how to prepare coded free-list data for modeling. The motivating case study pertains to individual-level data on the moral concerns ascribed to locally relevant deities, a central topic in the cognitive and evolutionary study of religion [for a recent review, see @religion_cooperation_ohce]. Specifically, we model within-subject agreement between a free-list task and a corollary item response scale in a cross-culturally diverse sample and overall, we fail to find a statistical association between these two instruments. This original empirical finding calls for further inquiry into identifying the cognitive processes that item response scales and free-list tasks reflect. We conclude with a call for psychological researchers to consider the free-list task as an alternative or complimentary instrument to item response scales for measuring cognitive and cultural models of mental representations. 
+
+To render the tutorial maximally useful, all code is written in the popular open-source programming language `R` [@rcitation, version 4.1.2], and we integrate key code chunks into the main text throughout. Modeling is implemented using the `brms` package [@burkner_brms_2017; @burkner_advanced_2018; @brmsirt], an interface to the probabilistic programming language `Stan` [@stan:2017; @stan_2020], and free-list data preparation is handled via `AnthroTools` [@anthrotools2016; @purzycki2016anthrotools]. Data wrangling and plotting are primarily facilitated by the `tidyverse` [@tidyverse], `ggplot2` [@ggplot2], `tidybayes` [@tidybayes2022], and `bayesplot` [@bayesplot; @gabry_visualization_2019] packages[^pkgs]. Data and code to reproduce the full manuscript and appendices, written in `R Markdown` [@rmarkdown_package; @rmarkdown_guide], are publicly available[^grhg].
+
+[^grhg]: The package `renv` [@renv] ensures a reproducible package environment.
+
+[^pkgs]: See Appendix D for a list of `R` packages, their dependencies, and version number used for this project, created using `grateful` [@grateful].
+
+# Part One: Simulating and modeling zero-one inflated and bounded data {-}
+## Salience calculations
+\noindent A listed item's *salience score* depends on both its listed order and the total number of listed items per participant. To calculate a salience score, an item's order number, $k$, is subtracted from 1 plus the total number of items a participant listed, $n$. This number is then divided by the total number of items listed, $\frac{n + 1 - k}{n}$. All items listed first thus get an item salience of 1. Items listed earlier have a higher salience score (assuming equal list lengths) and are typically easier to access or recall [e.g., @chaves_what_2019; @smith_using_1993; @smith_salience_1997; @quinlan2017freelisting]. Salience scores thus reflect a form of *cognitive* salience. For salience calculations, we use the `AnthroTools` package [@anthrotools2016; @purzycki2016anthrotools] with the `MAX_SALIENCE` table type function, which takes the maximum salience of the listed items in cases, where subjects listed the same item more than once. This is particularly useful when participants can list multiple items that would subsequently be coded similarly (e.g., in the context of our case study, 'theft', 'murder', and 'deceit' might all be coded as 'Morality'; see below and @bendixen_minds_nodate for details). These individual-level salience scores can then be modeled as the dependent variable as a function of some predictor(s). We illustrate a practical implementation in `R` in Part Two.
+
+## The zero-one inflated beta distribution
+\noindent Since salience scores range continuously from 0 to 1, and since 0 (item not listed) and 1 (item listed first) are valid values, we suggest modeling the outcome with a zero-one inflated beta (ZOIB) likelihood distribution with conventional link functions [for formal details, see @liu_zoib_bayes; @liu_zoib_2015; @ospina_general_2012]. The ZOIB is a mixture model determined by four parameters: the mean and the precision of the beta distribution; a 'zero-one inflation' parameter (i.e. the probability that an observation is either 0 or 1); and a 'conditional one inflation' parameter (i.e. the probability that, given an observation is 0 or 1, the observation is 1). This specification captures the entire range of possible values while still being constrained between zero and one. 
+
+Other common approaches to modeling 0 to 1 bounded outcome data include Gaussian or a regular beta distribution. However, among other limitations, the former depends on the assumption of normality, an assumption that rarely holds in real-world data of this kind and is therefore unlikely to provide a good fit to data in cases where the density of the distribution is not symmetrically centered around a midpoint. Further, if the Gaussian distribution is not truncated, the model can predict values outside the valid range of 0-1. On the other hand, while the beta distribution is more flexible than the normal distribution in that it can capture skewed and non-Gaussian densities, 0 and 1 are not valid values, and hence it is an inappropriate likelihood function for zero and/or 1 inflated data. One proposed solution to this problem is the 'transformed beta' distribution, where 0s and 1s are transformed to be, respectively, just above 0 (e.g., 0.001) and below 1 (e.g., 0.999). However, transforming data is arguably unprincipled and fails to capture a key feature of the data-generating process, particularly if the probability of zeros and/or ones are of theoretical interest. In the next section, we informally compare the fit of ZOIB to a Gaussian and transformed beta model using simulated zero-one inflated and bounded data.
+
+An alternative likelihood model for this kind of data is the recently proposed 'ordered beta distribution' [@kubinec_2020]. Compared to the ZOIB, which splits the 'effect' estimates into several parameters, the ordered beta returns a single 'effect' estimate in that it uses the same predictive model for both discrete and continuous outcomes. However, if the probability of zeros and/or ones has a natural interpretation (as is the case for free-list salience scores, where 1 reflects 'item listed first' and 0 equals 'item not listed') and is of theoretical interest, the ZOIB might still be preferable. In Appendix A, we demonstrate an implementation of the ordered beta and, in the context of the case study of the present paper at least, the ZOIB and the ordered beta yield similar results and posterior predictions.
+
+## Synthetic data and analysis
+\noindent To illustrate the utility of modeling salience scores (and similar data) using the ZOIB, we simulate and analyze zero-one inflated and bounded data, briefly discuss the interpretation and some simple post-processing of the output from `brms`, and compare the model to alternative likelihood models, namely the Gaussian distribution and the transformed beta. We finally discuss some limitations to the ZOIB and briefly consider some alternative modeling options that do not rely on transforming free-list data into salience scores.\linebreak
+
+### Simulation
+We simulate zero-one inflated and bounded data from a ZOIB for two groups, and model the 'effect' of group on the distribution of the outcome variable. Imagine, for instance, that these are salience scores from a free-list task administered at two field sites. We are then interested in whether a target item is listed earlier (i.e., is more salient) at one field site compared to the other. The data is stored in `sim_dat`. Assuming default priors (see Part Two for some explication on prior choice), this simple model is implemented in `brms` as follows[^blog].
+
+[^blog]: Parts of the code for this section is modified after @vuorre_how_2019.
+
+```{r zoib-sim, include=FALSE}
+# credit to: https://github.com/mvuorre/mvuorre.github.io/blob/main/_posts/2019-02-18-analyze-analog-scale-ratings-with-zero-one-inflated-beta-models/2019-02-18-analyze-analog-scale-ratings-with-zero-one-inflated-beta-models.Rmd
+
+# a function for simulating zoib
+rzoib <- function(n, zoi, coi, mu, phi) { 
+  a <- mu * phi
+  b <- (1 - mu) * phi
+  y <- vector("numeric", n)
+  y <- ifelse(
+    rbinom(n, 1, zoi), 
+    rbinom(n, 1, coi), 
+    rbeta(n, a, b)
+  )
+  y
+}
+
+set.seed(2021)
+n <- 500
+b <- 0.20 # set effect of group 0 vs. group 1
+
+group <- rbinom(n, 1, .5)
+zoi <-  0.5
+coi <- 0.65 + group*b
+mu <- 0.25 + group*b
+phi <- 5
+
+dat <- data.frame(group = group, zoi = zoi, coi = coi, mu = mu, phi = phi)
+
+dat$y <- rzoib(n, dat$zoi, dat$coi, dat$mu, dat$phi)
+
+sim_dat <- dat[c("group", "y")]
+sim_dat$group <- ifelse(sim_dat$group==0, "A", "B")
+sim_dat$group <- as.factor(sim_dat$group)
+
+```
+
+```{r zoib-sim-fit, include=FALSE}
+sim_mod <- brm(formula = bf(
+  y ~ 1 + group,
+  phi ~ 1 + group,
+  zoi ~ 1 + group,
+  coi ~ 1 + group),
+  data = sim_dat,
+  seed = 2021,
+  family = zero_one_inflated_beta())
+```
+
+```{r zoib-sim-fit-echo, echo=TRUE, eval=FALSE}
+sim_mod <- brm(formula = bf(
+  y ~ 1 + group,
+  phi ~ 1 + group,
+  zoi ~ 1 + group,
+  coi ~ 1 + group),
+  data = sim_dat,
+  family = zero_one_inflated_beta())
+```
+
+Recall that we are predicting the outcome with four parameters. Here, `y` represents the mean (`mu`) of the beta distribution. In `brms`, unlike the remaining parameters which have set names, the mean parameter does not have a default name but will be named however the dependent variable is named in the data frame. `phi` represents the precision of the beta distribution, `zoi` is the zero-one inflation, i.e., the probability of zero or one, and `coi` is the conditional one inflation, i.e., the probability of one given a zero or a one. Here, we specify our sole predictor, `group`, together with an intercept `1 +`, on all four parameters, such that `group` can influence all parts of the model, but in principle one could add either fewer or additional predictor terms to one or more of the parameters. `bf()` facilitates the specification of several sub-models within the same `formula` call. We then pass `sim_dat` to the `data` call and set the model `family` to the zero-one inflated beta distribution, which is native to `brms`. Implicit in the zero-one inflated beta distribution are the link functions, `mu = logit; phi = log; zoi = logit; coi = logit`, which allows the fitting of linear models to non-linear relationships. They are important to keep in mind when inspecting the output. All of this is wrapped within `brm()`, the workhorse of the `brms` package. The output (not shown directly here) can be summarized with `summary(sim_mod)`. 
+
+In the summary output, `Population-Level Effects` holds the model estimates alongside some chain diagnostics, which appear acceptable [a thorough discussion of diagnostic metrics of Bayesian models is outside the scope of this tutorial but see e.g., @bda3; @kruschke2014doing; @mcelreath_statistical_2020]. To get the estimates on their original scales, however, we need to apply their inverse link functions. Since `mu`, `zoi`, and `coi` are all in log odds, the logistic function will transform these estimates to their original scales, namely the mean of the beta distribution and the probability of zero and/or one, respectively, whereas the `phi` parameters need to be exponentiated due to the applied log link. Ideally, these transformations should be applied to draws from the posterior distribution and not on the estimates provided by the `summary()` function, which would amount to summarizing a summary. Table \ref{tab:sim-tab} reports the estimates on their original scales.
+
+```{r sim-tab, echo=FALSE, eval=TRUE}
+sim_mod_summary <- as_draws_df(sim_mod, pars = c("b_")) %>%
+    mutate_at(c("b_phi_Intercept","b_phi_groupB"), exp) %>% 
+    mutate_at(vars(-"b_phi_Intercept","b_phi_groupB"), plogis) %>% 
+    posterior_summary() %>% 
+    as.data.frame() %>% 
+    rownames_to_column("Parameter")
+
+papaja::apa_table(sim_mod_summary[1:8,], digits = 2, font_size = "small", booktabs = TRUE,
+                  caption = "Parameter estimates of 'sim_mod' after applying inverse link functions to posterior draws.",
+                  note = "Point estimates are posterior means.")
+```
+
+The `_Intercept` coefficients are the intercepts for each of the sub-models (i.e., the estimates for group A), while the `_groupB` terms are the differences between group A and B for each sub-model. A cursory inspection reveals group to have a positive association with both the mean of the beta distribution `groupB` and the conditional one-inflation `coi_groupB` in that both estimates and their intervals are solidly above 0.5.
+
+As is often the case with generalized linear models and in particular in mixture models, model results are easier to inspect when plotted. Figure \ref{fig:sim-plot} plots the raw data points (light and dark blue, slightly jittered to prevent over-plotting) and densities for each group together with model predictions of expected values within a 95% interval, taking into account all parameters excluding `phi`. It appears from the distribution of raw data that group B has fewer zeros, a higher mean, and more ones, which is consistent with the model predicting higher expected values on average in group B, supporting our inspection of the posterior estimates. 
+
+All in all, given sampling and simulation error with a finite sample, these results recover the parameters with which the data were simulated. Specifically, we simulated the intercepts as `zoi = 0.5`, `coi = 0.65`, `mu = 0.25`, and `phi = 5`, and group B to have a 0.2 positive difference compared to group A on both the mean of the beta distribution and the conditional one inflation, but no association between group and the precision or the zero-inflation.
+
+```{r sim-plot, echo=FALSE, fig.width=5, fig.height=3.5, fig.cap = "Plot of simulated data and model predictions of expected values. Raw data points (light and dark blue, slightly jittered) and densities from the two simulated groups. Posterior medians (black points) with 95% credible intervals."}
+set.seed(2021)
+
+sim_ce <- conditional_effects(sim_mod)
+sim_est <- data.frame(group = c(1,2), 
+                      median = c(sim_ce$group[["estimate__"]][1],sim_ce$group[["estimate__"]][2]),
+                      lower = c(sim_ce$group[["lower__"]][1],sim_ce$group[["lower__"]][2]),
+                      upper = c(sim_ce$group[["upper__"]][1],sim_ce$group[["upper__"]][2]))
+
+sim_p <- ggplot(sim_dat, aes(x=group, y=y, color = as.factor(group))) +
+            geom_jitter(alpha = 0.3, position = position_jitter(height=0.01, width=0.1)) +
+            theme_classic() +
+            theme(legend.position="none") + 
+            geom_pointrange(data = sim_est, 
+                          aes(x = group, y = median, ymin = lower, ymax = upper), color = "black", size = 0.25) +
+            geom_errorbar(data = sim_est, 
+                          aes(x = group, y = median, ymin = lower, ymax = upper, width=0.25), color = "black", size = 0.5) +
+            scale_color_manual(values = c("#2171B5", "#6BAED6")) +
+            scale_fill_manual(values = c("#2171B5", "#6BAED6")) + 
+            xlab("Group") + ylab("Outcome")
+
+ggMarginal(sim_p, groupColour = TRUE, groupFill = TRUE, type = "density", margins = "y")
+
+set.seed(NULL)
+```
+
+Finally, we can compare the fit of the ZOIB to simulated data with two alternative likelihood models, the Gaussian distribution and the transformed beta (cf., discussion above). Figure \ref{fig:sim-compare-plot} plots the marginal distribution of simulated outcome data (dark blue line) against 50 posterior predictive draws (light blue lines) from the three different likelihood models fitted to the simulated data. The *x*-axis represents the possible range of outcome values and the *y*-axis represents the density of each outcome value. Ideally, the predictive draws should show reasonable resemblance with the observed data. The ZOIB clearly exhibits the best fit of the three models, with the Gaussian over-shooting the mean of the simulated data but under-shooting the number of zeros and ones, and the transformed beta in turn under-shooting the mean, over-shooting extreme values and, critically, drops off just before zero and one.
+
+```{r include=FALSE}
+### Gaussian model
+sim_ols <- brm(y ~ 1 + group,
+            data = sim_dat,
+            family = gaussian(),
+            cores = 4, chains = 4, iter = 2000,
+            seed = 2021)
+
+### Transformed beta
+
+# transforming FL for a transformed beta reg
+# code for approximating transformed beta comes from: https://github.com/saudiwin/ordbetareg/blob/master/kubinec_ord_betareg.Rmd
+sim_dat$y_rescale <- (sim_dat$y - min(sim_dat$y,na.rm = T))/(max(sim_dat$y,na.rm=T) - min(sim_dat$y,na.rm = T))
+sim_dat$y_rescale <- (sim_dat$y_rescale * (sum(!is.na(sim_dat$y_rescale))-1) + 0.5)/sum(!is.na(sim_dat$y_rescale))
+
+sim_tbeta <- brm(y_rescale ~ 1 + group,
+           data = sim_dat,
+           family = "beta",
+           cores = 4, chains = 4, iter = 2000,
+           seed = 2021)
+
+```
+
+```{r sim-compare-plot, echo=FALSE, fig.width=8, fig.height=4, fig.cap = "Marginal distribution of simulated outcome data (dark blue lines) against posterior predictive draws (light blue lines) from three different likelihood models fitted to the simulated data."}
+set.seed(2021)
+
+ppp_ols <- pp_check(sim_ols, ndraws = 50) + theme_classic() + ggtitle("Gaussian") + 
+  scale_y_continuous(limits = c(0, 2)) + scale_x_continuous(limits = c(-2, 2), breaks = c(-2,-1,0,1,2)) +
+  theme(legend.position="none", axis.text = element_text(size = 12), axis.title = element_text(size = 14)) + ylab("Density")
+
+ppo_tbeta <- pp_check(sim_tbeta, ndraws = 50) + theme_classic() + ggtitle("Transformed beta") + 
+  scale_y_continuous(limits = c(0, 2)) + scale_x_continuous(limits = c(0, 1), breaks = c(0,1)) +
+  theme(legend.position="none", axis.text = element_text(size = 12), axis.title = element_text(size = 14))  + xlab("Outcome values")
+
+ppp_zoib <- pp_check(sim_mod, ndraws = 50) + theme_classic() + ggtitle("Zero-one inflated beta") + 
+  scale_y_continuous(limits = c(0, 2)) + scale_x_continuous(limits = c(0, 1), breaks = c(0,1)) +
+  theme(legend.position="none", axis.text = element_text(size = 12))
+
+(ppp_ols + ppo_tbeta + ppp_zoib + patchwork::plot_layout(ncol = 3, nrow = 1))
+
+set.seed(NULL)
+```
+
+\newpage
+
+### Discussion
+The previous section illustrated the basic implementation and utility of the ZOIB in the context of zero-one inflated and bounded data, such as free-list salience scores. However, by no means have we demonstrated that the ZOIB is superior to all alternatives under all circumstances. For instance, our walk-through was based on a single simulation run with a fixed set of parameters yielding a somewhat unusual distributional shape. It is not surprising that the ZOIB exhibited the best fit since, after all, the data were simulated from a ZOIB distribution! Our goal here is simply to demonstrate that the ZOIB is a viable option to consider in the context of free-list data and similar zero-one inflated and bounded data and to provide readers with some readily-implementable computational tools. With that said, there are limitations to the ZOIB, including the risk of over-parameterization and, thereby, over-fitting [@kubinec_2020]. Similarly, it is unclear whether the ZOIB plausibly reflect any specific cognitive data-generating processes. For instance, in a free-list task, are the cognitive processes that give rise to zeros and/or ones distinct from that giving rise to intermediate values, as modeled with a ZOIB?
+
+In this tutorial, we focus on modeling free-list data in the form of salience scores, as they are a popular transformation of free-list data that simultaneously takes into account both the position of a target item and the total number of items listed per participant while retaining an intuitive interpretation. However, it is of course possible to model free-list data more directly, as for instance modeling the presence/absence of a target item. This is straightforward with a logistic (Bernoulli) regression. Further, using a binomial distribution, researchers can model the number of times a participant lists certain items of interest (i.e., the number of 'sucesses') given the total number of items listed (i.e., the number of 'trials'), which in turn can be allowed to vary across participants. Alternatively, researchers could model the expected list position of a target item using a zero-inflated negative binomial[^mv]. The dependent variable would then be the position at which a target item appears for each participant. Similarly, researchers could model the cumulative probabilities of a target item appearing in each of the positions in which the item appears across the sample using zero-inflated ordinal regression. In the latter two cases, a zero-inflation parameter would model the probability of zero (i.e., target item not listed), similarly to the ZOIB, while in the non-zero part of the model a larger regression coefficient for any predictor(s) would indicate that the target item conditionally moves further down participants' lists (i.e., the target item becomes less 'salient'). In Appendix B, we illustrate an implementation and some simple post-processing for each of these options. Whether a particular modeling approach is preferable, in general or specifically, will depend on the data material and research question at hand, and we encourage researchers to experiment with these likelihood models---and others that we might have overlooked[^bespoke].
+
+[^mv]:Thanks to Matti Vuorre for this suggestion, as well as for a general comment on keeping the data-generating process in mind when modeling free-list data.
+
+[^bespoke]: All of the considered models --- as well as the model families of which they form a small part --- are off-the-shelf options that are increasingly available in contemporary statistical software, and they translate into a very wide range of powerful, practical applications. Eventually, however, analysts could aim to build more 'bespoke' models of free-list data, that is, models that are catered to the actual assumed cognitive processes at play. As such models by their very nature sacrifice generalizability for context-specificity, they are necessarily outside the scope of the present tutorial. 
+
+# PART TWO: Real-world case study {-}
+\noindent We now turn to an original real-world application, including how to practically prepare coded free-list responses for modeling. The case study stems from the cognitive and evolutionary study of religion and pertains to individual-level data on the moral concerns of locally relevant deities from across seven diverse field sites. Much contemporary research focus on the moral concerns of deities on the grounds that moralizing deities might co-evolve with expanded cooperation [e.g., @botero_ecology_2014; @johnson2016god; @norenzayan2016cultural; @purzycki_moralistic_2016; @purzycki2018evolution; @schloss2011evolutionary; @watts_broad_2015]. This focus in turn compels researchers to employ valid measures of cross-cultural, individual-level representations of morality and god concepts. As in many other corners of the social sciences, item responses scales are popular instruments to this end [e.g., @Atkinson:2011bf; @ge_large-scale_2019; @purzycki_moralization_bias; @simpson_belief2016].
+
+Here, we conduct a methodological comparison between an item response scale assessing the moral concern of two locally relevant deities and a free-list task on what angers said deities. Overall, we find that the item response scale does not clearly predict corresponding moral concerns in the free-list task. This novel empirical result raises important questions about current methodological approaches in the cognitive and evolutionary study of religion and calls for further inquiry into identifying the cognitive processes that item response scales and free-list tasks tap into. We then discuss candidate methodological explanations for the null result and highlight key implications for the study of moralizing religious traditions. Finally, we argue more generally that the free-list method has broad potential across the social sciences with regards to how researchers measure and model individual-level and cross-cultural variation in mental representations (e.g., beliefs, attitudes, values). For the sake of the tutorial, we again integrate code in the text. The following sections contribute to the tutorial by demonstrating a practical implementation of the ZOIB in a more realistic data setting.
+
+# Methods
+## Data
+\noindent The present data is publicly available and originates from The Evolution of Religion and Morality Project[^erm]. The main study consisted of a battery of demographic and religiosity questions as well as behavioral economic games [for further methodological details and presentations of field sites, see @bendixen_minds_nodate; @lang2019moralizing; @purzycki_moralistic_2016; @purzycki_cross-cultural_2016; @purzycki2018evolution]. Specifically for present purposes, participants were asked about the concerns of two different locally relevant deities (a 'moralistic' deity and a 'local' deity) using both a three-item scale and a free-list task. Table \ref{tab:site-tab} provides an overview of the field sites, their main economies, and the selected deities. For site-specific research reports, see Tanna, Vanuatu: @atkinson2017religion; Lovu, Fiji: @willard2018; Mauritius: @xygalatasbigsmall; Pesqueiro, Brazil: @cohen2017religiosity; Tyva Republic: @purzycki2018buddhism; Yasawa, Fiji: @mcnamara2018jesus.
+
+```{r site-tab, echo=FALSE, results="asis"}
+site_tab <- data.frame(
+  site = c("Coastal Tanna, Vanuatu", "Inland Tanna, Vanuatu", "Lovu, Fiji", "Mauritius", "Pesqueiro, Brazil", "Tyva Republic", "Yasawa, Fiji"),
+  econ = c("Horticulture/Hunting", "Horticulture/Hunting", "Wage Labor", "Wage Labor/Farming", "Wage Labor", "Wage Labor/Herding", "Fishing/Farming"),
+  mg = c("Christian God", "\\textit{Kalpapen}", "Hindu \\textit{Bhagwan}", "Hindu Shiva", "Christian God","Buddha-Burgan", "Christian God"),
+  lg = c("Garden Spirit (\\textit{Tupunus})", "Garden Spirit (\\textit{Tupunus})", "---", "Spirit/Soul/Ghost (\\textit{Nam})", "Virgin Mary", "Spirit-Masters (\\textit{Cher eezi})", "Ancestor Spirits (\\textit{Kalou-vu})")
+)
+
+colnames(site_tab) <- c("Site", "Main Economy", "Moralistic Deity", "Local Deity")
+
+papaja::apa_table(site_tab, font_size = "small", escape = FALSE,
+                  format = "latex",
+                  caption = "Overview of field sites")
+```
+
+[^erm]: Full datasets and protocols are publicly available at: https://github.com/bgpurzycki/Evolution-of-Religion-and-Morality.
+
+## Item response scale
+\noindent The item response scale took the form: *How important is it for* [moralistic/local deity] *to punish:* [theft/lying/murder]? Responses were on scales of 0 to 4: (0) Not important at all; (1) A little important; (2) Important; (3) Very important; and (4) The most important. Responses are transformed into an index scale ranging from 0 to 1, by dividing each participant's score on the items by the maximum possible score that each participant could have scored, depending on the number of items that each participant actually completed. For instance, for a participant who answered all three items, the maximum possible score is 12, and for a participant who only completed two items, the maximum possible score is 8. Thus, a participant who completed all three questions and got a total score of 6 would get an index score of $6/12 = 0.5$[^itemscale].
+
+[^itemscale]: One issue with this approach is that it assumes that, in cases of missing responses, participants are consistent across the three items---e.g., a participant can get a 1 on the index either by selecting (4) on all three items or on just one or two of the items, if failing to respond to the remaining item(s). Another issue is the lack of uncertainty around the index score. There are other---and arguably more principled---ways of handling missing values, such as full Bayesian imputation [e.g., @erler_dealing_2016; @mcelreath_statistical_2020]. We refrain from pursuing this here for a couple of reasons. First, this particular scale has been used in previous research [@lang2019moralizing; @purzycki_moralistic_2016] where it failed to predict behavioral outcome in economic games, and so we were interested in associating it with an additional instrument, the free-list task. Second, handling missing values in item scales is outside the scope of this tutorial.
+
+## Free-list data and salience calculations in `R`
+\noindent In the free-list task, participants were asked to freely list the kinds of things that angers the [moralistic deity/the local deity]. The free-list data were subsequently thematically coded by two independent coders according to both a top-down, twelve-category coding rubric (our 'general' codes) drawn from @purzycki_ecological_2016, and a finer-grained, bottom-up rubric subjective to each coder [our 'specific' codes; for further details, see @bendixen_minds_nodate]. According to the general coding rubric, a response was coded as 'Morality', when it satisfied the following description: *generalized behaviors that have a benefit or cost to other people (e.g., hurting, being generous, sharing, etc.)*.
+
+Calculating salience is straightforward using the `AnthroTools` package. Here, we calculate item salience for the general codes across what angers the moralistic deity (`BGD`). The `CalculateSalience()` command from `AnthroTools` takes several arguments. First, a data frame `data` where the free-list data is stored. Each row is an individual's free-list response on the *n*th order. Next, an `Order` argument which is the column storing a response's order number. Then, a `Subj` argument which is the column that contains each individuals' unique ID number. `CODE` is the coded free-list response. For instance, in this case `BGD` is the column that contains responses for what angers the moralistic deity. The `GROUPING` argument is optional and is used to group responses depending on group, such as participants from different field sites. It's not strictly required here; however, if participants' IDs are not unique across field sites but only within sites, then `GROUPING` needs to be specified.
+
+Finally, `Salience` specifies the name of the new column that will store the calculated salience score, in this case `BGD.S`.
+
+```{r bgd-gen-salience, echo=TRUE, results='hide'}
+BGD.FL <- CalculateSalience(data, Order = "Order", Subj = "CERCID",
+                            CODE = "BGD", GROUPING = "Culture", 
+                            Salience = "BGD.S")
+```
+
+Then, a little data wrangling needs to happen. What we want is a data set, where each row is a unique participant with their ID number, cultural group, a salience score for the Morality free-list code and their overall response on the moral interest scale for the given deity. There are many ways to go about this---see source code for one example. We can check the structure `str()` of the resulting data frame, where `id` is participants' ID numbers, `y` is salience score for free-listed Morality, `culture` is cultural group, and `scale` is overall response on the moral interest scale for the moralistic god's moral concerns.
+
+<!-- We first select relevant variables from the `BGD.FL` object, namely `Culture`, `CERCID`, `Order`, `BGD` (the coded free-list responses), and `BGD.S` (the salience scores of the coded free-list responses). Then, we retain only complete cases from this reduced data frame and pass it to `FreeListTable` in `AnthroTools` with the `MAX_SALIENCE` table type, which for each individual determines each code's highest salience. We then move IDs from row names to a `CERCID` column and extract each individual's ID number as well as each participants salience score of the Morality free-list code. This object is then merged with each participant's overall moral interest scale response for the moralistic god (`MGMEAN`), which is imported from the `cerc` object containing demographic and other variables related to the greater project. Finally, variables are renamed for consistency across data frames and models. -->
+
+```{r bgd-wrangling, results='hide', echo=FALSE}
+# select relevant variables
+BGDsublabs <- c("Culture", "CERCID", "Order", "BGD", "BGD.S")
+BGDsub <- BGD.FL[BGDsublabs]
+
+# only complete cases in free-list data
+BGDsub <- BGDsub[complete.cases(BGDsub), ]
+
+# calculate salience
+BGD.max <- FreeListTable(BGDsub, CODE = "BGD", Order = "Order", 
+                         Salience = "BGD.S", Subj = "CERCID", 
+                         tableType = "MAX_SALIENCE")
+
+# move IDs from rownames to CERCID column
+BGD.max$CERCID <- rownames(BGD.max)
+
+# select and extract CERCID and MAX Salience for Morality
+BGDmergelabs <- c("CERCID", "Morality")
+BGDmerge1 <- BGD.max[BGDmergelabs]
+
+# extract CERCID, Culture/SITE and overall scale response (MGMEAN) from cerc
+BGDcerclabs <- c("CERCID", "SITE", "MGMEAN")
+BGDcerc <- cerc[BGDcerclabs]
+
+# merge with free-list data
+BGDmerge <- merge(BGDmerge1, BGDcerc, by.x = "CERCID")
+
+# only complete cases in final dataset
+BGDmerge <- BGDmerge[complete.cases(BGDmerge), ]
+
+# set column names
+BGDmerge <- setNames(BGDmerge, c("CERCID","BGD.max.S", "Culture", "MGMEAN"))
+
+# change and shorten data frame and variable names
+bgd_gen_data <- BGDmerge
+cols <- c("id", "y", "culture", "scale")
+colnames(bgd_gen_data) <- cols
+```
+
+```{r bgd-gen-str}
+str(bgd_gen_data)
+```
+
+# Modeling salience scores
+\noindent Recall that we want to assess whether the 'moral interest scale' of a focal deity corresponds to salience of moral items in the free-list task. Specifically, if a participant responded on the scale that a focal deity (moralistic or local deity) was morally punitive, both overall on the scale and on sub-items (theft, lying, murder), would corresponding responses---that is, 'Morality' as a general code and, as specific codes, theft, lying and murder---also be higher up on a participant's free-list regarding what angers the focal deity? We construct a series of models assessing these relationships: 1) for both the moralistic and local deity, 2) between the index score on the scale and free-listed 'Morality' (general code), and 3) between each item of the scale (theft, lying, murder) and the salience of each of these focal items in the free-lists. Since we have no reason to suspect systematic missingness patterns, we perform complete-case analysis. Below, we detail our analysis, first in formal notation and then in `R` code.
+
+## Overview
+\noindent We model two deities (moralistic and local) and for each of these we model, first, the relationship between free-listed, general-coded 'Morality' and the moral interest scale (Model 1 and Model 2) and then the relationship between free-listed, specifically-coded moral items (theft, lying, murder) and the corresponding single items of the moral interest scale (Models 3--8). This yields eight models. As we cluster by field site, these are multilevel models,  and for each main model, we also fit a corresponding 'null' model that excludes scale response as a predictor of the free-list outcome but retains varying effects of field site, and then employ approximate leave-one-out cross-validation [@vehtari_practical_2017; @loo1] to assess the relative out-of-sample predictive performance of models with and without scale as a predictor. Throughout model-building, checking and inference, we informally follow a Bayesian workflow [@gelman_bayesian_2020]. In the following sections, we spell out the general formal form of the eight main models, starting with Models 1-2, as well as their implementation in `R`.
+
+## Formal form of Models 1-2: Predicting general Morality in the free-list task
+\noindent All our linear models include: global intercepts $\beta^{\textrm{Intercept}}$, site-specific (indexed by $j$) intercepts $\beta^{\textrm{Intercept}}_{[j]}$, global effect for scale score $\beta^{\textrm{Scale}}S_i$, and varying slopes across sites for scale score $\beta^{\textrm{Scale}}_{[j]}S_i$. The models thus take the general formal form:
+
+\begin{align*}
+\textrm{Free-listed Morality}_i &\sim \textrm{ZOIBeta}( \mu_i, \phi_i, \alpha_i, \gamma_i )\\
+\textrm{logit}(\mu_i) &= \beta^{\textrm{Intercept}}_\mu + \beta^{\textrm{Intercept}}_{{\mu},[j]} + \beta^{\textrm{Scale}}_{\mu}S_i + \beta^{\textrm{Scale}}_{{\mu},[j]}S_i \\
+\textrm{log}(\phi_i) &= \beta^{\textrm{Intercept}}_\phi + \beta^{\textrm{Intercept}}_{{\phi},[j]} + \beta^{\textrm{Scale}}_{\phi}S_i + \beta^{\textrm{Scale}}_{{\phi},[j]}S_i\\
+\textrm{logit}(\alpha_i) &= \beta^{\textrm{Intercept}}_\alpha + \beta^{\textrm{Intercept}}_{{\alpha},[j]} + \beta^{\textrm{Scale}}_{\alpha}S_i + \beta^{\textrm{Scale}}_{{\alpha},[j]}S_i\\
+\textrm{logit}(\gamma_i) &= \beta^{\textrm{Intercept}}_\gamma + \beta^{\textrm{Intercept}}_{{\gamma},[j]} + \beta^{\textrm{Scale}}_{\gamma}S_i + \beta^{\textrm{Scale}}_{{\gamma},[j]}S_i
+\end{align*}
+
+\noindent where $\mu$ and $\phi$ represent, respectively, the mean and the precision of the beta distribution, $\alpha$ represents 'zero-one inflation' (the probability that an observation is either 0 or 1) and $\gamma$ represents 'conditional one inflation' (the probability that, given an observation is 0 or 1, the observation is 1).
+
+We define our priors, which we checked through iterative cycles of prior predictive simulation (see below), as follows:
+\begin{align*}
+\beta^{\textrm{Intercept}}_\mu &\sim \textrm{Normal}(0, 1)\\
+\beta^{\textrm{Scale}}_{\mu} &\sim \textrm{Normal}(0, 2.5)\\
+\beta^{\textrm{Intercept}}_\phi &\sim \textrm{Normal}(2, 0.5)\\ 
+\beta^{\textrm{Scale}}_{\phi} &\sim \textrm{Normal}(-1, 1)\\
+\beta^{\textrm{Intercept}}_\alpha &\sim \textrm{Normal}(0, 1)\\
+\beta^{\textrm{Scale}}_{\alpha} &\sim \textrm{Normal}(0, 2.5)\\
+\beta^{\textrm{Intercept}}_\gamma &\sim \textrm{Normal}(0, 1)\\ 
+\beta^{\textrm{Scale}}_{\gamma} &\sim \textrm{Normal}(0, 2.5)
+\end{align*}
+
+\noindent These priors are weakly regularizing as they constrain the estimates to be mostly within realistic ranges and are mildly skeptical toward strong statistical relationships. It is important to stress, however, that priors should be interpreted in the context of the data and model of which they are part [@gelman_prior], and that these priors might therefore not generalize to other modeling scenarios. Developing principled and practical approaches to eliciting appropriate prior distributions is an active research area, and further discussion is outside the scope of this tutorial [for a technical review, see @mikkola2021prior; for a practical introduction, see @mcelreath_statistical_2020].
+
+Except for $\phi$, the prior coefficients are on the log odds scale, meaning that to get the coefficients on their original scale, we first turn them into odds by exponentiating them (cf., Part One). The original scale is then odds$/(1$ + odds). So, for instance, an intercept prior with mean 0 on the log odds scale means that the coefficient is centered on exp(0)/(exp(0) + 1) $= 1 / (1 + 1) = 0.5$, which is the midpoint of our outcome variable (i.e., saliences scores ranging from 0 to 1). Likewise, since two standard deviations roughly cover 95\% probability of a normal distribution, assigning a prior of Normal$(0, 1)$ sets the bulk of the prior probability mass to be within the range of exp($\pm2$)/(exp($\pm2$) + 1) $\approx \pm7.38 / (\pm7.38 + 1) \approx [0.12,0.88]$. In this particular parameterization, the $\beta^{\textrm{Scale}}$ coefficients represent the estimated change in outcome (i.e., salience score) going from zero on the predictor (i.e., the lowest response on the index) to 1 (i.e., the maximum response on the index). A $\textrm{Normal}(0,2.5)$ prior is therefore sensible in that it puts some probability mass on the entire range between $\approx-1$ and $\approx1$ while being centered on 0 (i.e., no change)[^jointpriors].
+
+[^jointpriors]: Note that when we model these priors in a joint distribution, the prior for the intercepts in the $\mu$, $\alpha$, and $\gamma$ sub-models widens so as to allow for the steep slopes implied by the prior on $\beta^{\textrm{Scale}}$.
+
+As we cluster on field site, each linear model ($\mu,\phi,\alpha,\gamma$) has its own multi-level structure, which is formally defined as follows. The varying effects across sites are bound in a variance-covariance matrix with multivariate priors of a Gaussian variety (with means of 0 as these are already included in the linear models above):
+\begin{align*}
+\begin{bmatrix} \beta^{\textrm{Intercept}}_{{\mu,\phi,\alpha,\gamma},[j]}\\ \beta^{\textrm{Scale}}_{{\mu,\phi,\alpha,\gamma},[j]}\end{bmatrix} &\sim \textrm{Multivariate Normal}\left({\begin{bmatrix}0\\ 0\end{bmatrix}}, \mathbf{SRS}\right)
+\end{align*}
+
+\noindent Here, $\mathbf{S}$ is a diagonal matrix of intercept and predictors' standard deviations, $\sigma_p$,
+\begin{align*}
+\mathbf S &= \begin{bmatrix}
+\sigma_{\beta^{\textrm{Intercept}}_{\mu,\phi,\alpha,\gamma}} & 0 \\
+0 & \sigma_{\beta^{\textrm{Scale}}_{\mu,\phi,\alpha,\gamma}} \\
+\end{bmatrix}\\ 
+\mathbf S &\sim \textrm{LKJcorr}(4)\\
+\sigma_p &\sim \textrm{Exponential}(1)
+\end{align*}
+
+\noindent while $\mathbf{R}$ is their correlation matrix with a prior distribution from the Lewandowski family [@lewandowski2009generating].
+
+## Implementation in `R`
+\noindent All of this is implemented in `R` with `brms` as follows, illsutrated with Model 1 `m1`, which predicts the salience of 'Morality' as a general code using the three-item moral interest scale: First, we specify our model `formula`. In the present study, the model formula is relatively simple, in that we are predicting salience scores (`y`) according to an intercept `1` and a single predictor, the moral interest scale (`scale`), which is clustered according to field site (`culture`), yielding the basic syntax `y ~ 1 + scale + (1 + scale | culture)`. This specification allows each field site to have varying intercepts and slopes. We specify this structure on all four sub-models. 
+
+```{r zoib-structure, eval=FALSE, echo = FALSE}
+formula = bf(
+  y ~ 1 + scale + (1 + scale | culture),
+  phi ~ 1 + scale + (1 + scale | culture),
+  zoi ~ 1 + scale + (1 + scale | culture),
+  coi ~ 1 + scale + (1 + scale | culture))
+```
+
+Next, since this is a Bayesian model, we want to explicitly set the prior distributions for each of the model parameters and hyper-parameters (see above). `brms` includes a convenience call, `get_prior()`, that returns a complete list of model parameters and their names given a `formula`, a data frame `data`, and a likelihood function `family`. 
+
+```{r zoib-priors, eval=FALSE, echo = FALSE}
+get_prior(formula = bf(
+  y ~ scale + (scale|culture),
+  phi ~ scale + (scale|culture),
+  zoi ~ scale + (scale|culture),
+  coi ~ scale + (scale|culture)),
+  data = bgd_gen_data,
+  family = zero_one_inflated_beta())
+```
+
+Then, we manually specify our priors, using the `set_prior()` command in $\texttt{brms}$ and store it in a new object, `priors_main`. Note that this step is not strictly necessary to make the model run. In the absence of user-specified prior distributions, `brms` implements default 'flat' priors that will likely work well in many applied cases and yield results that approximate maximum likelihood estimation.
+
+```{r set-gen-priors, echo = TRUE}
+priors_main <- set_prior("normal(0, 2.5)", class = "b") +
+  set_prior("normal(0, 1)", class = "Intercept") + 
+  set_prior("exponential(1)", class = "sd") +
+  set_prior("normal(0, 2.5)", class = "b", dpar = "coi") +
+  set_prior("normal(0, 1)", class = "Intercept", dpar = "coi") + 
+  set_prior("exponential(1)", class = "sd", dpar = "coi") +
+  set_prior("normal(-1, 1)", class = "b", dpar = "phi") +
+  set_prior("normal(2, 0.5)", class = "Intercept", dpar = "phi") +
+  set_prior("exponential(1)", class = "sd", dpar = "phi") +
+  set_prior("normal(0, 2.5)", class = "b", dpar = "zoi") +
+  set_prior("normal(0, 1)", class = "Intercept", dpar = "zoi") + 
+  set_prior("exponential(1)", class = "sd", dpar = "zoi") +
+  set_prior("lkj_corr_cholesky(4)", class = "cor")
+```
+
+Next, we verify that these priors are sensible. We aim for so-called weakly regularizing priors, that is, priors that put most of their probability mass within realistic ranges. To do so, we perform prior predictive checks, whereby we sample from the model and prior without fitting the model to the data. Note that we now pass our formula, data, and likelihood to `brm()`, and that we also add our priors via the `prior` call. We set `sample_prior = "only"` so that we only sample from the prior and not the data, and a `seed` for reproducibility.
+
+```{r prior-sim, results='hide', echo=TRUE}
+m1priorcheck <- brm(formula = bf(
+  y ~ 1 + scale + (1 + scale | culture),
+  phi ~ 1 + scale + (1 + scale | culture),
+  zoi ~ 1 + scale + (1 + scale | culture),
+  coi ~ 1 + scale + (1 + scale | culture)),
+  prior = priors_main,
+  data = bgd_gen_data,
+  family = zero_one_inflated_beta(),
+  sample_prior = "only", seed = 2021)
+```
+
+There are many options for assessing the implications of the priors [see e.g., @gabry_visualization_2019; @kruschke2014doing; @mcelreath_statistical_2020][^kurz] and oftentimes, prior predictive checks need to be catered to the specific data and model(s) at hand [@gelman_bayesian_2020]. Here, we show just two different readily-available visualization options. First, we can sample from the prior predictive distribution and compare those values to the empirical distribution of observed values, using the convenience function `pp_check()` in the $\texttt{bayesplot}$ package (Figure \ref{fig:prior-check-plots}, top). We simply pass our prior model fit `m1priorcheck` to `pp_check()` and set the number of samples (say, 30) that we want from the prior predictive distribution `ndraws = 30`, as well as a `seed` for reproducibility. This is the same procedure as we used to generate Figure \ref{fig:sim-compare-plot}.
+
+[^kurz]: See also Kurz' [@kurzDoingBayesianDataAnalysis2021; @kurzStatisticalRethinkingSecondEd2021] on-going code translations of @kruschke2014doing and @mcelreath_statistical_2020. 
+
+```{r prior-check-plots, echo = FALSE, fig.height=7, fig.width=8, fig.cap = "Prior predictive checks. Top: Prior predictions of the marginal distribution of the outcome variable (kernel density). The dark blue line is the distribution of observed values. The light blue lines are draws from the prior predictive distribution. The *y*-axis represents density, while the *x*-axis denotes outcome scores. Bottom: Prior predictions for each field site from Model 1 on the relationship between the moral interest scale (*x*-axis) and salience of the free-listed general Morality code (*y*-axis). Lines are draws of expected values from the prior predictive distribution."}
+# top plot: kernel density
+set.seed(2021)
+ppc_top <- pp_check(m1priorcheck, ndraws = 30)
+
+# bottom plot: expected relationship between outcome and predictor
+set.seed(2021)
+ppc_bottom <- bgd_gen_data %>%
+  group_by(culture) %>%
+  data_grid(scale = seq_range(0:1, n = 10)) %>%
+  add_epred_draws(m1priorcheck, ndraws = 100, dpar = TRUE, scale = "response") %>%
+  ggplot(aes(x = scale, y = y)) +
+  geom_line(aes(y = .epred, group = paste(culture, .draw)), alpha = 1/10, color = "#08519C") +
+  facet_wrap(~culture, nrow = 2, drop = FALSE) +
+  theme_bw() +
+  theme(strip.background = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        strip.text.x = element_text(
+            size = 10, face = "bold"),
+        legend.position = "none") + 
+  scale_y_continuous(limits=c(-0.05,1.05), breaks=c(0,0.5,1), name = "Free-Listed Morality (Salience)") + 
+  scale_x_continuous(limits=c(-0.05,1.05), breaks=c(0,0.5,1), name = "Moral Interest Scale")
+
+ppc_top + theme(legend.position="none") + scale_x_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) + xlab("Outcome values") + ylab("Density") +
+  ppc_bottom +
+  patchwork::plot_layout(ncol = 1, nrow = 2)
+
+set.seed(NULL)
+```
+
+The dark blue line in the upper panel of Figure \ref{fig:prior-check-plots} is the distribution of observed values, whereas the light blue lines are draws from the prior predictive distribution. As can be seen, the prior draws mostly fall within realistic estimates (around the observed values) and only a few draws are in extreme ranges (i.e., large numbers of zeros and/or ones). Recall that this is so even before the model has "seen" the data (the `sample_prior = "only"` call makes the model sample only from the priors). Note, however, that we include the observed distribution only for illustration here; ideally, the priors should be sensible *a priori*, that is before either the model *or* the analyst has inspected---or even collected---the data.
+
+While this kernel density plot is a quick way to visualize a model's prior expectation of the marginal outcome distribution, it gives us nothing in the way of assessing the priors for the influence of the predictor terms; that is, what the model expects the relationship to be between the independent and the dependent variable(s). For that, we can instead plot draws from the prior predictive distribution of the outcome as a function of the predictor (Figure \ref{fig:prior-check-plots}, bottom). Each line is a regression line of expected values. As can be seen, some lines are flat, some slope downwards and yet others upwards, suggesting that the model allows a wide range of statistical relationships. Finally, we are ready to fit the full model and then perform *posterior* predictive checks, to assess how much the model learned from the data (see Figure \ref{fig:m1-postcheck}), compared to these *prior* predictive checks. In the following code block, the `formula`, `data`, `prior`, and `family` calls are similar to above, and we then add some explicit settings to the sampler, which in turn facilitate reasonable chain convergence and model comparison.
+
+```{r model1, echo = TRUE}
+m1 <- brm(formula = bf(
+  y ~ 1 + scale + (1 + scale | culture),
+  phi ~ 1 + scale + (1 + scale | culture),
+  zoi ~ 1 + scale + (1 + scale | culture),
+  coi ~ 1 + scale + (1 + scale | culture)),
+  data = bgd_gen_data,
+  prior = priors_main,
+  family = zero_one_inflated_beta(),
+  
+  # some chain controls
+  cores = 4, chains = 4, 
+  iter = 6000, control = list(adapt_delta = 0.99),
+  seed = 2021,
+  
+  # save_pars facilitates model comparison
+  save_pars = save_pars(all = TRUE))
+
+```
+
+```{r m1-postcheck, echo=FALSE, fig.width=5, fig.height=3.5, fig.cap="Posterior predictive check for `m1`. The dark blue line is the distribution of observed values. The light blue lines are draws from the posterior predictive distribution. The *y*-axis represents density, while the *x*-axis denotes outcome scores."}
+set.seed(2021)
+pp_m1 <- pp_check(m1, ndraws = 50)
+
+pp_m1 + theme(legend.position="none", 
+              axis.text = element_text(size = 10), 
+              axis.title = element_text(size = 10)) + 
+        scale_x_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) + 
+        xlab("Outcome values") + ylab("Density")
+```
+
+```{r post-check-scat, echo=FALSE}
+# we write a plotting function, so that we can re-use it for later models
+gen_epred_plot <- function(data, model){ 
+  data %>%
+    group_by(culture) %>%
+    data_grid(scale = seq_range(0:1, n = 10)) %>%
+    add_epred_draws(model, ndraws = 100, scale = "response", re_formula = NULL, dpar = TRUE, allow_new_levels = TRUE, 
+                    sample_new_levels = "uncertainty") %>% # see ?prepare_predictions for details
+    ggplot(aes(x = scale, y = y)) +
+    geom_line(aes(y = .epred, # possible parameters: mu, zoi, coi, .epred (the expected response)
+                  group = paste(culture, .draw)), alpha = 1/10, color = "#08519C") +
+    geom_jitter(data = na.omit(data), size = 3, width = 0.01, alpha = .5, shape = 1, color = "black") +
+    facet_wrap(~na.omit(culture), nrow = 2, drop = FALSE) + 
+    scale_fill_brewer() +
+    theme_bw() +
+    theme(strip.background = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank(),
+          strip.text.x = element_text(
+              size = 10, face = "bold"),
+          legend.position = "none") + 
+    scale_y_continuous(limits=c(-0.05,1.05), breaks=c(0,0.5,1), name = "Free-Listed Morality (Salience)") + 
+    scale_x_continuous(limits=c(-0.05,1.05), breaks=c(0,0.5,1), name = "Moral Interest Scale")
+}
+
+```
+
+Note that the posterior predictive draws in the kernel density plot are much closer to the distribution of observed values, indicating that the model indeed has learned from the data. With `summary(m1)` we can get an overview of the main parameter estimates and chain diagnostics of the model. 
+
+## Formal form and implementation of Models 3-8: Predicting specific moral items in the free-list task
+\noindent The key difference between the general-coded 'Morality' models outlined in the previous section (Models 1-2) and the specific moral item models (Models 3-8) is that in the latter set we model the predictor, the single moral scale item, with a monotonic function, since it is an ordered category of response options [@burkner_modelling_2020; @burkner_vuorre_ordinal; @liddell_analyzing_2018]. This allows each response option (from 0 to 4) to have its own conditional effect (though with the same directionality, i.e. monotonicity) on the outcome, which is now salience of a single free-listed item. These monotonic predictors are modeled with a weakly informative prior in the form of a Dirichlet distribution, $\textrm{Dir}(2,2,2,2)$. This prior encodes the expectation that any of the response options could be more or less likely than the others [@mcelreath_statistical_2020, p. 391-396]. 
+
+The remaining priors are otherwise identical to Models 1-2 with the following exception. Compared to Models 1-2, where the $\beta^{\textrm{Scale}}$ coefficients for the $\mu$, $\alpha$, and $\gamma$ sub-models are interpreted as the estimated change in outcome when the predictor is set at one (i.e., the maximal response on the index) compared to zero (i.e., the lowest response on the index), in Models 3-8 the $\beta$ coefficients instead represent the estimated average difference between two adjacent categorical response options [cf., @burkner_modelling_2020]. Therefore, we set a prior on the $\beta^{\textrm{Scale}}$ coefficients for the $\mu$, $\alpha$, and $\gamma$ sub-models in Models 3-8 to $\textrm{Normal}(0,0.625)$, where the standard deviation of $2.5$ from the Models 1-2 $\beta$ priors the $\mu$, $\alpha$, and $\gamma$ sub-models is divided with $4$, the number of response options minus 1.
+
+To implement these changes in `brms`, we need only a few modifications to the `R` code above. To specify monotonicity, we simply wrap the predictor, `scale`, in `mo()`, and `brms` takes care of the rest, and we set a Dirichlet prior on the monotonic predictors similarly to above and add it to the prior call [for further details, see @burkner_modelling_2020]: `set_prior("dirichlet(2,2,2,2)", class="simo", dpar=c("","coi","phi","zoi"), coef="moscale1")`.
+
+```{r lgd-gen-wrangling, include=FALSE}
+LGD.FL <- CalculateSalience(data, Order = "Order", Subj = "CERCID", 
+                            CODE = "LGD", GROUPING = "Culture", 
+                            Rescale = FALSE, Salience = "LGD.S")
+
+LGDsublabs <- c("Culture", "CERCID", "Order", "LGD", "LGD.S")
+LGDsub <- LGD.FL[LGDsublabs]
+LGDsub <- LGDsub[complete.cases(LGDsub), ] # Only complete cases in free-list data
+
+LGD.max <- FreeListTable(LGDsub, CODE = "LGD", Order = "Order", Salience = "LGD.S", # Calculate salience
+                         Subj = "CERCID", tableType = "MAX_SALIENCE")
+
+LGD.max$CERCID <- rownames(LGD.max)
+
+LGDmergelabs <- c("CERCID", "Morality") # Extract CERCID and MAX Salience for Morality
+LGDmerge1 <- LGD.max[LGDmergelabs]
+
+LGDcerclabs <- c("CERCID", "SITE", "LGMEAN") # Extract CERCID, Culture/SITE and LGMEAN from cerc
+LGDcerc <- cerc[LGDcerclabs]
+LGDmerge <- merge(LGDmerge1, LGDcerc, by.x = "CERCID")
+LGDmerge <- LGDmerge[complete.cases(LGDmerge), ]
+
+LGDmerge <- setNames(LGDmerge, c("CERCID","LGD.max.S", "Culture", "LGMEAN")) # set column names
+
+# change and shorten df and var names
+lgd_gen_data <- LGDmerge
+cols <- c("id", "y", "culture", "scale")
+colnames(lgd_gen_data) <- cols
+```
+
+```{r model1-null, include=FALSE}
+### Model 1 cont'd 
+
+# Priors for "null" models
+priors_main_null <- 
+  set_prior("normal(0,1)", class = "Intercept") + 
+  set_prior("exponential(1)", class = "sd") +
+  set_prior("normal(0,1)", class = "Intercept", dpar = "coi") + 
+  set_prior("exponential(1)", class = "sd", dpar = "coi") +
+  set_prior("normal(2, .5)", class = "Intercept", dpar = "phi") + 
+  set_prior("exponential(1)", class = "sd", dpar = "phi") +
+  set_prior("normal(0,1)", class = "Intercept", dpar = "zoi") + 
+  set_prior("exponential(1)", class = "sd", dpar = "zoi")
+
+# Model 1 "null"
+m1_null <- brm(formula = bf(
+  y ~ (1|culture),
+  phi ~ (1|culture),
+  zoi ~ (1|culture),
+  coi ~ (1|culture)),
+  prior = priors_main_null,
+  data = bgd_gen_data,
+  family = zero_one_inflated_beta(),
+  cores = 4, chains = 4, iter = 6000, control = list(adapt_delta = 0.99),
+  seed = 2021, save_pars = save_pars(all = TRUE))
+
+```
+
+```{r model1-loo, include=FALSE}
+# Leave-one-out cross-validation
+(loo_m1 <- loo(m1, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m1_null <- loo(m1_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m1, loo_m1_null)
+round(model_weights(m1, m1_null, weights = "loo"), 3)
+```
+
+```{r model2, include=FALSE}
+### Model 2: general morality, local gods
+m2 <- stats::update(m1, newdata = lgd_gen_data)
+```
+
+```{r model2-null, include=FALSE}
+# Model 2 "null"
+m2_null <- stats::update(m1_null, newdata = lgd_gen_data)
+```
+
+```{r model2-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m2 <- loo(m2, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m2_null <- loo(m2_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m2, loo_m2_null)
+round(model_weights(m2, m2_null, weights = "loo"), 3)
+```
+
+```{r spec-wrangling, include=FALSE}
+######################################
+### Data wrangling: Specific codes ###
+######################################
+
+### Prepare FL moral items (Stealing, Murder, Lies) for Moralistic Gods, Dislikes ###
+BGD.FL.SPEC.S <- CalculateSalience(data, Order = "Order", Subj = "CERCID",
+                                   CODE = "BGD_SPEC_TB_cl", GROUPING = "Culture", Rescale = FALSE, Salience = "BGD.S.SPEC")
+
+BGD_SPECsublabs <- c("Culture", "CERCID", "Order", "BGD_SPEC_TB_cl", "BGD.S.SPEC")
+BGD_SPECsub <- BGD.FL.SPEC.S[BGD_SPECsublabs]
+
+BGD_SPECsub$BGD_SPEC_new <- BGD_SPECsub$BGD_SPEC_TB_cl # New column identical to BGD.S.SPEC
+
+BGD_SPECsub <- BGD_SPECsub[complete.cases(BGD_SPECsub$BGD_SPEC_new), ] # removes any row with NA in column "BGD_SPEC_new" 
+
+# Freelist Table
+BGD_SPEC.max <- FreeListTable(BGD_SPECsub, CODE = "BGD_SPEC_new", Order = "Order", Salience = "BGD.S.SPEC",
+                              Subj = "CERCID", tableType = "MAX_SALIENCE")
+
+BGD_SPEC.max$CERCID <- rownames(BGD_SPEC.max) # Takes ID's from row names and puts them in a new column
+
+BGD_SPECmergelabs <- c("CERCID", "Stealing", "Murder", "Lies") # Extract variables of interest
+BGD_SPECmerge1 <- BGD_SPEC.max[BGD_SPECmergelabs]
+
+BGD_SPECcerclabs <- c("CERCID", "SITE", "BGSTLIMP", "BGLIEIMP", "BGMURDIMP", "MGMEAN") # Extract variables of interest from cerc
+BGD_SPECcerc <- cerc[BGD_SPECcerclabs]
+BGD_SPECmerge <- merge(BGD_SPECmerge1, BGD_SPECcerc, by.x = "CERCID")
+
+BGD_SPECmerge_data_stl <- BGD_SPECmerge[complete.cases(BGD_SPECmerge$BGSTLIMP), ] # complete case analysis
+BGD_SPECmerge_data_murd <- BGD_SPECmerge[complete.cases(BGD_SPECmerge$BGMURDIMP), ] # complete case analysis
+BGD_SPECmerge_data_lie <- BGD_SPECmerge[complete.cases(BGD_SPECmerge$BGLIEIMP), ] # complete case analysis
+
+# BG Stealing: change and shorten df and var names
+bgd_stl_data <- BGD_SPECmerge_data_stl[c("CERCID","Stealing","SITE","BGSTLIMP")]
+cols <- c("id", "y", "culture", "scale")
+colnames(bgd_stl_data) <- cols
+bgd_stl_data$scale <- as.factor(ordered(bgd_stl_data$scale))
+
+# BG Murder: change and shorten df and var names
+bgd_murd_data <- BGD_SPECmerge_data_murd[c("CERCID","Murder","SITE","BGMURDIMP")]
+cols <- c("id", "y", "culture", "scale")
+colnames(bgd_murd_data) <- cols
+bgd_murd_data$scale <- as.factor(ordered(bgd_murd_data$scale))
+
+# BG Lies: change and shorten df and var names
+bgd_lie_data <- BGD_SPECmerge_data_lie[c("CERCID","Lies","SITE","BGLIEIMP")]
+cols <- c("id", "y", "culture", "scale")
+colnames(bgd_lie_data) <- cols
+bgd_lie_data$scale <- as.factor(ordered(bgd_lie_data$scale))
+
+### Prepare FL moral items (Stealing, Murder, Lies) for Local Gods, Dislikes ###
+LGD.FL.SPEC.S <- CalculateSalience(data, Order = "Order", Subj = "CERCID",
+                                   CODE = "LGD_SPEC_TB_cl", GROUPING = "Culture", Rescale = FALSE, Salience = "LGD.S.SPEC")
+
+LGD_SPECsublabs <- c("Culture", "CERCID", "Order", "LGD_SPEC_TB_cl", "LGD.S.SPEC")
+LGD_SPECsub <- LGD.FL.SPEC.S[LGD_SPECsublabs]
+
+LGD_SPECsub$LGD_SPEC_new <- LGD_SPECsub$LGD_SPEC_TB_cl # New column identical to LGD_SPEC_TB_cl, so that it is easy to change input column
+
+LGD_SPECsub <- LGD_SPECsub[complete.cases(LGD_SPECsub$LGD_SPEC_new), ] # removes any row with NA in column "LGD_SPEC_new" 
+
+# Freelist Table
+LGD_SPEC.max <- FreeListTable(LGD_SPECsub, CODE = "LGD_SPEC_new", Order = "Order", Salience = "LGD.S.SPEC",
+                              Subj = "CERCID", tableType = "MAX_SALIENCE")
+
+LGD_SPEC.max$CERCID <- rownames(LGD_SPEC.max) # Takes ID's from row names and puts them in a new column
+
+LGD_SPECmergelabs <- c("CERCID", "Stealing", "Murder", "Lies") # Extract variables of interest
+LGD_SPECmerge1 <- LGD_SPEC.max[LGD_SPECmergelabs]
+
+LGD_SPECcerclabs <- c("CERCID", "SITE", "LGSTEALIMP", "LGLIEIMP", "LGMURDIMP", "LGMEAN") # Extract variables of interest from cerc
+LGD_SPECcerc <- cerc[LGD_SPECcerclabs]
+LGD_SPECmerge <- merge(LGD_SPECmerge1, LGD_SPECcerc, by.x = "CERCID")
+
+LGD_SPECmerge_data_stl <- LGD_SPECmerge[complete.cases(LGD_SPECmerge$LGSTEALIMP), ] # complete case analysis
+LGD_SPECmerge_data_murd <- LGD_SPECmerge[complete.cases(LGD_SPECmerge$LGMURDIMP), ] # complete case analysis
+LGD_SPECmerge_data_lie <- LGD_SPECmerge[complete.cases(LGD_SPECmerge$LGLIEIMP), ] # complete case analysis
+
+# LG Stealing: change and shorten df and var names
+lgd_stl_data <- LGD_SPECmerge_data_stl[c("CERCID","Stealing","SITE","LGSTEALIMP")]
+cols <- c("id", "y", "culture", "scale")
+colnames(lgd_stl_data) <- cols
+lgd_stl_data$scale <- as.factor(ordered(lgd_stl_data$scale))
+
+# LG Murder: change and shorten df and var names
+lgd_murd_data <- LGD_SPECmerge_data_murd[c("CERCID","Murder","SITE","LGMURDIMP")]
+cols <- c("id", "y", "culture", "scale")
+colnames(lgd_murd_data) <- cols
+lgd_murd_data$scale <- as.factor(ordered(lgd_murd_data$scale))
+
+# LG Lies: change and shorten df and var names
+lgd_lie_data <- LGD_SPECmerge_data_lie[c("CERCID","Lies","SITE","LGLIEIMP")]
+cols <- c("id", "y", "culture", "scale")
+colnames(lgd_lie_data) <- cols
+lgd_lie_data$scale <- as.factor(ordered(lgd_lie_data$scale))
+```
+
+```{r spec-mod-priors, include=FALSE}
+# Set priors
+priors_spec <- set_prior("normal(0,0.625)", class = "b") +
+  set_prior("normal(0,1)", class = "Intercept") + 
+  set_prior("exponential(1)", class = "sd") +
+  set_prior("normal(0,0.625)", class = "b", dpar = "coi") +
+  set_prior("normal(0,1)", class = "Intercept", dpar = "coi") + 
+  set_prior("exponential(1)", class = "sd", dpar = "coi") +
+  set_prior("normal(-1, 1)", class = "b", dpar = "phi") +
+  set_prior("normal(2, .5)", class = "Intercept", dpar = "phi") + 
+  set_prior("exponential(1)", class = "sd", dpar = "phi") +
+  set_prior("normal(0,0.625)", class = "b", dpar = "zoi") +
+  set_prior("normal(0,1)", class = "Intercept", dpar = "zoi") + 
+  set_prior("exponential(1)", class = "sd", dpar = "zoi") +
+  set_prior("lkj_corr_cholesky(4)", class = "cor") +
+  set_prior("dirichlet(2,2,2,2)", class="simo", dpar=c("","coi","phi","zoi"), coef="moscale1")
+
+# Simulate from priors and main model
+m3priorcheck <- brm(formula = bf(
+  y ~ mo(scale) + (mo(scale)|culture),
+  phi ~ mo(scale) + (mo(scale)|culture),
+  zoi ~ mo(scale) + (mo(scale)|culture),
+  coi ~ mo(scale) + (mo(scale)|culture)),
+  prior = priors_spec,
+  data = bgd_stl_data,
+  family = zero_one_inflated_beta(),
+  sample_prior = "only") # only sample prior for prior predictions
+
+# Plot simulated priors against observed outcome
+set.seed(2021)
+pp_check(m3priorcheck, nsamples = 30) # global prior pred check
+```
+
+```{r model3, include=FALSE}
+### Model 3: stealing, moralistic gods
+m3 <- brm(formula = bf(
+  y ~ mo(scale) + (mo(scale)|culture),
+  phi ~ mo(scale) + (mo(scale)|culture),
+  zoi ~ mo(scale) + (mo(scale)|culture),
+  coi ~ mo(scale) + (mo(scale)|culture)),
+  prior = priors_spec,
+  data = bgd_stl_data,
+  family = zero_one_inflated_beta(),
+  cores = 4, chains = 4, iter = 6000, control = list(adapt_delta = 0.99),
+  seed = 2021, save_pars = save_pars(all = TRUE))
+```
+
+```{r model3-null, include=FALSE}
+# Model 3 "null"
+m3_null <- stats::update(m1_null, newdata = bgd_stl_data)
+```
+
+```{r model3-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m3 <- loo(m3, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m3_null <- loo(m3_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m3, loo_m3_null)
+round(model_weights(m3, m3_null, weights = "loo"), 3)
+```
+
+```{r model4, include=FALSE}
+### Model 4: murder, moralistic gods
+m4 <- stats::update(m3, newdata = bgd_murd_data)
+```
+
+```{r model4-null, include=FALSE}
+# Model 4 "null"
+m4_null <- stats::update(m1_null, newdata = bgd_murd_data)
+```
+
+```{r model4-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m4 <- loo(m4, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m4_null <- loo(m4_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m4, loo_m4_null)
+round(model_weights(m4, m4_null, weights = "loo"), 3)
+```
+
+```{r model5, include=FALSE}
+### Model 5: lies, moralistic gods
+m5 <- stats::update(m3, newdata = bgd_lie_data)
+
+summary(m5) # Convergence issues...
+```
+
+```{r model5-null, include=FALSE}
+# Model 5 "null"
+m5_null <- stats::update(m1_null, newdata = bgd_lie_data)
+```
+
+```{r model5-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m5 <- loo(m5, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m5_null <- loo(m5_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m5, loo_m5_null)
+round(model_weights(m5, m5_null, weights = "loo"), 3)
+```
+
+```{r model6, include=FALSE}
+### Model 6: stealing, local gods
+m6 <- stats::update(m3, newdata = lgd_stl_data)
+```
+
+```{r model6-null, include=FALSE}
+# Model 6 "null"
+m6_null <- stats::update(m1_null, newdata = lgd_stl_data)
+```
+
+```{r model6-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m6 <- loo(m6, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m6_null <- loo(m6_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m6, loo_m6_null)
+round(model_weights(m6, m6_null, weights = "loo"), 3)
+```
+
+```{r model7, include=FALSE}
+### Model 7: murder, local gods
+m7 <- stats::update(m3, newdata = lgd_murd_data)
+```
+
+```{r model7-null, include=FALSE}
+# Model 7 "null"
+m7_null <- stats::update(m1_null, newdata = lgd_murd_data)
+```
+
+```{r model7-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m7 <- loo(m7, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m7_null <- loo(m7_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m7, loo_m7_null)
+round(model_weights(m7, m7_null, weights = "loo"), 3)
+```
+
+```{r model8, include=FALSE}
+### Model 8: lies, local gods
+m8 <- stats::update(m3, newdata = lgd_lie_data)
+```
+
+```{r model8-null, include=FALSE}
+# Model 8 "null"
+m8_null <- stats::update(m1_null, newdata = lgd_lie_data)
+```
+
+```{r model8-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m8 <- loo(m8, moment_match = FALSE)) # moment_match = TRUE threw an error...
+(loo_m8_null <- loo(m8_null, moment_match = FALSE)) # moment_match = TRUE threw an error...
+loo_compare(loo_m8, loo_m8_null)
+round(model_weights(m8, m8_null, weights = "loo"), 3)
+```
+
+# Results and Discussion
+## Results
+\noindent Here we report key results. First, we assess the posterior predictions of Model 1 and 2 (see Appendix C for similar plots of Models 3-8), and then compare model comparison metrics between all models and their respective 'null' models.
+
+Figure \ref{fig:scat-plots} plots, for each field site and each deity (top: moralistic deities, bottom: local deities), draws of expected values from the posterior predictive distribution[^postdraw], as well as raw data points with slight jitter. For the moralistic deities, in most sites the draw lines are mostly flat, suggesting that the relationship between the moral interest scale (\textit{x}-axis) and salience of the free-listed general Morality code (\textit{y}-axis) is weak or non-existent. At all sites for the local deities, the relationship seems to trend slightly upwards, although the estimates are quite uncertain, as vizualized by the widely-spaced draw lines at several sites. Note that we get posterior predictions for Lovu for the local deities even though we do not have data for a local deity at that particular field site. Rather, the model predicts expected values for a hypothetical unobserved field site, which we label Lovu. 
+
+```{r scat-plots, echo=FALSE, fig.height=8, fig.width=8, fig.cap = "Posterior predictions for each field site and each deity from Model 1 and 2 on the relationship between the moral interest scale (*x*-axis) and salience of the free-listed general Morality code (*y*-axis). Lines are draws of expected values from the posterior distribution. Raw data points are slightly jittered."}
+set.seed(2021)
+bgd_fig <- gen_epred_plot(bgd_gen_data, m1) + 
+  ggtitle('MORALISTIC GODS')
+set.seed(NULL)
+
+# insert dummy row for Lovu with impossible values in LGD data frame. This will throw an error when plotting,
+# "Removed 1 rows containing missing values (geom_point).", which can be safely ignored here.
+lgd_gen_data <- rbind(lgd_gen_data, data.frame(id = NA, y = NA, culture = "Lovu", scale = NA))
+
+set.seed(2021)
+lgd_fig <- gen_epred_plot(lgd_gen_data, m2) + 
+  ggtitle('LOCAL GODS')
+set.seed(NULL)
+
+(bgd_fig) + (lgd_fig) +
+  patchwork ::plot_layout(ncol = 1, nrow = 2)
+```
+
+[^postdraw]: More formally, these are draws from the posterior distribution given by [cf., @ospina_general_2012]: 
+\linebreak $\textrm{E}[y] = \textrm{Pr(zero or one)} \times \textrm{Pr(conditional one)} + \textrm{mean of the beta distribution} \times \textrm{Pr(neither zero nor one)} = \alpha \times \gamma + \mu \times (1 - \alpha)$. As can be seen, this calculation ignores the precision parameter of the beta distribution $\phi$.
+
+To put these results into perspective, consider the raw data points. Data points in the top-left corner of a panel are individuals who, when asked on the scale how important it is for the target deity to punish theft, lying, and murder, respond 'not at all important', but free-list a moral item as the top thing that angers the target deity. And vice versa for the bottom-right corner: here, participants respond that theft, lying, and murder are all the most important thing for the target deity to punish[^logic] but does not free-list a moral item among that deity's concerns. That a noticeable number of participants gravitated toward such response patterns is an illustration of the model-driven inferences, namely that these data and model predictions suggest no relationship---and at best a very weak and uncertain one---between the scale and the free-list task. Results are qualitatively similar when we assess the posterior predictions of the specific codes and the corresponding moral scale items (see Appendix C).
+
+[^logic]: For present purposes, we ignore the logical incoherence of such a response pattern (i.e., responding that two or more distinct behaviors are *the most* important thing to punish).
+
+This interpretation is further bolstered when we compare each main model against its respective 'null' model. Table \ref{tab:result-tab} reports raw (i.e., without having applied their inverse link functions, unlike in the simulated case above) $\beta$ coefficients (posterior means) with 95% credible intervals for each main model's focal parameters. If the scale and the free-list task is positively associated, we would expect either of these parameters to have estimates where the bulk of the interval is above zero (with the caveat that the one inflation parameter $\beta^{\textrm{Scale}}_{\gamma}$ is conditional on the zero-one inflation parameter $\beta^{\textrm{Scale}}_{\alpha}$). Table \ref{tab:result-tab} also reports model comparison metrics obtained with approximate leave-one-out cross-validation (LOO-CV). In a multilevel context, LOO-CV is an indicator of a model's accuracy in predicting a new observation in one of the observed groups[^logo]. LOO-CV is a preferable model comparison metric as it penalizes model complexity. This is desirable for present purposes as we aim to identify the best performing and most parsimonious model within each of the eight model pairs. Akaike weights are calculated on the basis of the leave-one-out information criterion and a higher value means more weight, i.e. the model that the algorithm more heavily favors. Expected log posterior density (ELPD) is a measure of overall model fit and out-of-sample predictive accuracy. Here, we report the ELPD difference and the standard error (SE) of the difference between the best performing model, denoted by an asterisk, and the remaining model in the pair.
+
+[^logo]: An alternative approach is leave-one-group out cross-validation (LOGO-CV) which assesses a model's accuracy in predicting a new observation in a new (unobserved) group. This procedure is more computationally intensive, because it involves refitting the model $k$ times, where $k$ equals the number of observed groups. See Appendix C for an implementation. Results are qualitatively similar to LOO-CV in the present study.
+
+While ELPD differences are generally small compared to their standard errors, in most cases we find that LOO-CV either favors the null models or favors none of the models in particular, indicating that including scale response as a predictor of moral salience in the free-list task does not generally improve out-of-sample predictive performance when penalizing increased model complexity. The only clear exception to this pattern is the Model 5 pair, where the full model (`m5`) is clearly favored over the null model. Note, however, for this particular model, we had chain convergence issues, potentially rendering estimates unreliable. Further, in an alternative specification of the Model 5-pair using the ordered beta distribution as the outcome likelihood the interval of the $\beta$ coefficient straddles zero, although here too LOO-CV favors the main model over the null. However, upon inspecting field-site specific estimates this appears primarily driven by the Lovu data (see Appendix C). Overall, then, we infer from these lines of evidence that there is no clear and consistent association between the moral interest scale and the free-list task across gods and field sites.
+
+```{r main coef table prep, include=FALSE}
+#####################################
+### Table of coefficients and LOO ###
+#####################################
+
+### Extract and prepare relevant coefficients and model comparison estimates
+
+m1_fixef <- as.data.frame(fixef(m1)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m1_null_fixef <- as.data.frame(fixef(m1_null)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m1_loo <- as.data.frame(model_weights(m1, m1_null, weights = "loo")) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m1_elpd <- as.data.frame(t(loo_compare(loo_m1, loo_m1_null))) %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m2_fixef <- as.data.frame(fixef(m2)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m2_null_fixef <- as.data.frame(fixef(m2_null))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m2_loo <- as.data.frame(model_weights(m2, m2_null, weights = "loo"))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m2_elpd <- as.data.frame(t(loo_compare(loo_m2, loo_m2_null)))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m3_fixef <- as.data.frame(fixef(m3)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m3_null_fixef <- as.data.frame(fixef(m3_null))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m3_loo <- as.data.frame(model_weights(m3, m3_null, weights = "loo"))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m3_elpd <- as.data.frame(t(loo_compare(loo_m3, loo_m3_null)))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m4_fixef <- as.data.frame(fixef(m4)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m4_null_fixef <- as.data.frame(fixef(m4_null))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m4_loo <- as.data.frame(model_weights(m4, m4_null, weights = "loo"))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m4_elpd <- as.data.frame(t(loo_compare(loo_m4, loo_m4_null)))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m5_fixef <- as.data.frame(fixef(m5)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m5_null_fixef <- as.data.frame(fixef(m5_null))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m5_loo <- as.data.frame(model_weights(m5, m5_null, weights = "loo"))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m5_elpd <- as.data.frame(t(loo_compare(loo_m5, loo_m5_null)))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m6_fixef <- as.data.frame(fixef(m6)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m6_null_fixef <- as.data.frame(fixef(m6_null))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m6_loo <- as.data.frame(model_weights(m6, m6_null, weights = "loo")) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m6_elpd <- as.data.frame(t(loo_compare(loo_m6, loo_m6_null)))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m7_fixef <- as.data.frame(fixef(m7)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m7_null_fixef <- as.data.frame(fixef(m7_null))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m7_loo <- as.data.frame(model_weights(m7, m7_null, weights = "loo"))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m7_elpd <- as.data.frame(t(loo_compare(loo_m7, loo_m7_null)))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m8_fixef <- as.data.frame(fixef(m8)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m8_null_fixef <- as.data.frame(fixef(m8_null))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m8_loo <- as.data.frame(model_weights(m8, m8_null, weights = "loo"))  %>% mutate_if(is.numeric, round_tidy, digits=2)
+m8_elpd <- as.data.frame(t(loo_compare(loo_m8, loo_m8_null))) %>% mutate_if(is.numeric, round_tidy, digits=2)
+ 
+```
+
+```{r result-tab, echo=FALSE}
+### Insert estimates in list
+
+coef_list <- list(
+                Models = c("mu intercept", "phi intercept","alpha intercept", "gamma intercept",
+                                 "mu slope", "phi slope","alpha slope", "gamma slope",
+                                 "Akaike Weights", "ELPD difference [SE]"),
+                m1 = c(paste0(m1_fixef[1:8,1], " [",m1_fixef[1:8,3], ", ", m1_fixef[1:8,4],"]"), 
+                        m1_loo[1,1], paste0(m1_elpd$m1[1]," [", m1_elpd$m1[2],"]")),
+                m1null = c(paste0(m1_null_fixef[1:4,1], " [",m1_null_fixef[1:4,3], ", ", m1_null_fixef[1:4,4],"]"), 
+                        m1_loo[2,1], paste0(m1_elpd$m1_null[1]," [", m1_elpd$m1_null[2],"]")),
+                
+                m2 = c(paste0(m2_fixef[1:8,1], " [",m2_fixef[1:8,3], ", ", m2_fixef[1:8,4],"]"), 
+                        m2_loo[1,1], paste0(m2_elpd$m2[1]," [", m2_elpd$m2[2],"]")),
+                m2null = c(paste0(m2_null_fixef[1:4,1], " [",m2_null_fixef[1:4,3], ", ", m2_null_fixef[1:4,4],"]"), 
+                        m2_loo[2,1], paste0(m2_elpd$m2_null[1]," [", m2_elpd$m2_null[2],"]")),
+                
+                m3 = c(paste0(m3_fixef[1:8,1], " [",m3_fixef[1:8,3], ", ", m3_fixef[1:8,4],"]"), 
+                        m3_loo[1,1], paste0(m3_elpd$m3[1]," [", m3_elpd$m3[2],"]")),
+                m3null = c(paste0(m3_null_fixef[1:4,1], " [",m3_null_fixef[1:4,3], ", ", m3_null_fixef[1:4,4],"]"), 
+                        m3_loo[2,1], paste0(m3_elpd$m3_null[1]," [", m3_elpd$m3_null[2],"]")),
+                
+                m4 = c(paste0(m4_fixef[1:8,1], " [",m4_fixef[1:8,3], ", ", m4_fixef[1:8,4],"]"), 
+                        m4_loo[1,1], paste0(m4_elpd$m4[1]," [", m4_elpd$m4[2],"]")),
+                m4null = c(paste0(m4_null_fixef[1:4,1], " [",m4_null_fixef[1:4,3], ", ", m4_null_fixef[1:4,4],"]"), 
+                        m4_loo[2,1], paste0(m4_elpd$m4_null[1]," [", m4_elpd$m4_null[2],"]")),
+                
+                m5 = c(paste0(m5_fixef[1:8,1], " [",m5_fixef[1:8,3], ", ", m5_fixef[1:8,4],"]"), 
+                        m5_loo[1,1], paste0(m5_elpd$m5[1]," [", m5_elpd$m5[2],"]")),
+                m5null = c(paste0(m5_null_fixef[1:4,1], " [",m5_null_fixef[1:4,3], ", ", m5_null_fixef[1:4,4],"]"), 
+                        m5_loo[2,1], paste0(m5_elpd$m5_null[1]," [", m5_elpd$m5_null[2],"]")),
+                
+                m6 = c(paste0(m6_fixef[1:8,1], " [",m6_fixef[1:8,3], ", ", m6_fixef[1:8,4],"]"), 
+                        m6_loo[1,1], paste0(m6_elpd$m6[1]," [", m6_elpd$m6[2],"]")),
+                m6null = c(paste0(m6_null_fixef[1:4,1], " [",m6_null_fixef[1:4,3], ", ", m6_null_fixef[1:4,4],"]"), 
+                        m6_loo[2,1], paste0(m6_elpd$m6_null[1]," [", m6_elpd$m6_null[2],"]")),
+                
+                m7 = c(paste0(m7_fixef[1:8,1], " [",m7_fixef[1:8,3], ", ", m7_fixef[1:8,4],"]"), 
+                        m7_loo[1,1], paste0(m7_elpd$m7[1]," [", m7_elpd$m7[2],"]")),
+                m7null = c(paste0(m7_null_fixef[1:4,1], " [",m7_null_fixef[1:4,3], ", ", m7_null_fixef[1:4,4],"]"), 
+                        m7_loo[2,1], paste0(m7_elpd$m7_null[1]," [", m7_elpd$m7_null[2],"]")),
+                
+                m8 = c(paste0(m8_fixef[1:8,1], " [",m8_fixef[1:8,3], ", ", m8_fixef[1:8,4],"]"), 
+                        m8_loo[1,1], paste0(m8_elpd$m8[1]," [", m8_elpd$m8[2],"]")),
+                m8null = c(paste0(m8_null_fixef[1:4,1], " [",m8_null_fixef[1:4,3], ", ", m8_null_fixef[1:4,4],"]"), 
+                        m8_loo[2,1], paste0(m8_elpd$m8_null[1]," [", m8_elpd$m8_null[2],"]"))
+)
+
+### Add double dash to null models, instead of beta coefs
+coef_list[[3]] <- append(coef_list[[3]], "--", after = 4)
+coef_list[[3]] <- append(coef_list[[3]], "--", after = 5)
+coef_list[[3]] <- append(coef_list[[3]], "--", after = 6)
+coef_list[[3]] <- append(coef_list[[3]], "--", after = 7)
+coef_list[[5]] <- append(coef_list[[5]], "--", after = 4)
+coef_list[[5]] <- append(coef_list[[5]], "--", after = 5)
+coef_list[[5]] <- append(coef_list[[5]], "--", after = 6)
+coef_list[[5]] <- append(coef_list[[5]], "--", after = 7)
+coef_list[[7]] <- append(coef_list[[7]], "--", after = 4)
+coef_list[[7]] <- append(coef_list[[7]], "--", after = 5)
+coef_list[[7]] <- append(coef_list[[7]], "--", after = 6)
+coef_list[[7]] <- append(coef_list[[7]], "--", after = 7)
+coef_list[[9]] <- append(coef_list[[9]], "--", after = 4)
+coef_list[[9]] <- append(coef_list[[9]], "--", after = 5)
+coef_list[[9]] <- append(coef_list[[9]], "--", after = 6)
+coef_list[[9]] <- append(coef_list[[9]], "--", after = 7)
+coef_list[[11]] <- append(coef_list[[11]], "--", after = 4)
+coef_list[[11]] <- append(coef_list[[11]], "--", after = 5)
+coef_list[[11]] <- append(coef_list[[11]], "--", after = 6)
+coef_list[[11]] <- append(coef_list[[11]], "--", after = 7)
+coef_list[[13]] <- append(coef_list[[13]], "--", after = 4)
+coef_list[[13]] <- append(coef_list[[13]], "--", after = 5)
+coef_list[[13]] <- append(coef_list[[13]], "--", after = 6)
+coef_list[[13]] <- append(coef_list[[13]], "--", after = 7)
+coef_list[[15]] <- append(coef_list[[15]], "--", after = 4)
+coef_list[[15]] <- append(coef_list[[15]], "--", after = 5)
+coef_list[[15]] <- append(coef_list[[15]], "--", after = 6)
+coef_list[[15]] <- append(coef_list[[15]], "--", after = 7)
+coef_list[[17]] <- append(coef_list[[17]], "--", after = 4)
+coef_list[[17]] <- append(coef_list[[17]], "--", after = 5)
+coef_list[[17]] <- append(coef_list[[17]], "--", after = 6)
+coef_list[[17]] <- append(coef_list[[17]], "--", after = 7)
+
+# convert list to data frame
+coef_tab <- as.data.frame(coef_list)
+
+# transpose
+t_coef_tab <- t(as.data.frame(coef_list))
+
+t_coef_tab_full <- t_coef_tab # with intercepts and phi beta
+
+# without intercepts and phi beta (this is what is reported in the main manuscript)
+t_coef_tab <- as.data.frame(t_coef_tab)
+t_coef_tab$V1 <- NULL
+t_coef_tab$V2 <- NULL
+t_coef_tab$V3 <- NULL
+t_coef_tab$V4 <- NULL
+t_coef_tab$V6 <- NULL
+
+# mark the favored model with an asterisk
+t_coef_tab$V10[t_coef_tab$V10=="0.00 [0.00]"] <- "*"
+
+# move first row to column names and remove duplicate row
+colnames(t_coef_tab) <- t_coef_tab[1,]
+t_coef_tab <- t_coef_tab[-1, ]
+
+# get number of observations per model
+t_coef_tab$N <- c(nrow(m1$data), " ", 
+                  nrow(m2$data), " ",
+                  nrow(m3$data), " ",
+                  nrow(m4$data), " ",
+                  nrow(m5$data), " ",
+                  nrow(m6$data), " ",
+                  nrow(m7$data), " ",
+                  nrow(m8$data), " ")
+
+# set column names
+colnames(t_coef_tab) <- c("$\\beta^{\\textrm{Scale}}_{\\mu}$", "$\\beta^{\\textrm{Scale}}_{\\alpha}$",
+                          "$\\beta^{\\textrm{Scale}}_{\\gamma}$", "Akaike Weights", "ELPD difference [SE]", "\\textit{N}")
+
+# set row names
+rownames(t_coef_tab) <- c("\\texttt{m1}", "\\texttt{m1\\_null}", 
+                          "\\texttt{m2}", "\\texttt{m2\\_null}",
+                          "\\texttt{m3}", "\\texttt{m3\\_null}",
+                          "\\texttt{m4}", "\\texttt{m4\\_null}",
+                          "\\texttt{m5}", "\\texttt{m5\\_null}",
+                          "\\texttt{m6}", "\\texttt{m6\\_null}",
+                          "\\texttt{m7}", "\\texttt{m7\\_null}",
+                          "\\texttt{m8}", "\\texttt{m8\\_null}")
+
+# print table
+papaja::apa_table(t_coef_tab, escape = FALSE, font_size = "small", booktabs = TRUE, align = c("l", rep("c", 5)),
+                  caption = "Focal parameter estimates for all models and model comparison metrics.",
+                  note = "Point estimates of the raw $\\beta$ coefficients are posterior means with 95\\% credible intervals
+                  in brackets. The best performing model of the eight pairs is denoted by an asterisk. \\textit{N} is the total number of observations used in each model (identical across model pairs).")
+
+
+```
+
+```{r save-envir, include=FALSE, cache=TRUE}
+save.image("all_main_mods.RData")
+
+```
+
+## Discussion
+\noindent We now turn to a discussion of, first, possible methodological accounts of the null result, and then consider some of its key implications. 
+
+First, many participants did not free-list the target moral items---note the zeros along the \textit{x}-axis in Figure \ref{fig:scat-plots}. One potential issue might be that these zeros drive the non-association between the two instruments. However, we claim that excluding participants who did not free-list moral items in this case is misleading. These participants \textit{could} have listed moral items, but they simply did not. Therefore, there is information in the zeros, which may in turn help guide interpretation. One the other hand, since the free-list task was capped at five items (a few participants did list more than that), it stands to reason that participants potentially could have listed the target moral items eventually but that the design did not allow for it. Of course, items listed later would have a lower salience score and so this argument does not account for the---at best---very weak and uncertain relationship between the two instruments. To address this, we re-ran the main models (`m1` -- `m8`) with reduced data sets which only included non-zero free-list responses. Again, we found no reliable association between the two instruments across deities and field sites (see Appendix C).
+
+Other methodological limitations should also be considered. It could be, for instance, that the non-existing relationship between the two instruments is simply an artifact of the study protocol. Participants completed the scale before completing the free-list task. Hence, it is possible that participants were simply reluctant to free-list the target moral items (theft, murder, lying) because they had already completed scale items pertaining to these. We are skeptical of this explanation for several reasons. First, this does not explain the non-relationships for moral items in general (Models 1-2), as the Morality code includes moral behaviors in general, not only the three target moral items that were the focus in the item response scale. Second, the protocol was quite long (around 90 minutes), and the free-list task was not preceded directly by the moral items. Therefore, we further deem it unlikely that the scale items had a noticeable effect on the free-list task. Third, this ordering effect cannot account for the disparate responses that participants gave across field sites and deities. Note that there are many more non-zero free-list responses in the panels of the moralistic deities compared to the local deities. In other words, if participants were reluctant to free-list moral items because they had already completed the moral items, why were they then more likely to free-list moral items for the moralistic gods than the local gods? Fourth, the ordering effects explanation contradicts another possible explanation for the results, namely that some kind of priming influenced the free-list task. Just as the order effects could hamper the tendency to report the target items, in principle it is also possible that the scale items could have increased the tendency to report the target items, perhaps through a priming mechanism. We are skeptical of the priming explanation for the same reasons as the reverse. In sum, ordering effects are not plausible explanations in our view.
+
+Lastly, one could object that the instructions for the two tasks are not sufficiently similar to warrant an empirical comparison; the item scale asks about behaviors that a given deity might \textit{punish} whereas the free-list task probes the kinds of things that \textit{angers} a given deity. We concede this objection. However, we do not think that it explains away the reported results. Ethnographically, there is often considerable overlap between what a deity is angered by and what said deity punishes, at least for these data [@bendixen_minds_nodate] but also in the ethnographic record more generally [e.g., @bendixen_purzycki_mog]. And so, while we would perhaps not expect a perfect association between the two tasks, we would at least expect a detectable positive association. Of course, another possibility is that the two tasks measure distinct cognitive processes. This is an intriguing area of future research; however, we refrain from discussing this possibility further here, since our data do not allow us to make inferences one way or the other.
+
+The reported null results speak directly to current debates in the cognitive and evolutionary sciences of religion. A rapidly growing body of work assesses the relationship between moralizing religions and deities and social behavior [@religion_cooperation_ohce] and item response scales are very common instruments as measures of moral salience of deities and religions. However, our finding that an item response scale on a target deity's moral concerns does not predict moral salience of that deity in a free-list task raises questions about current methodological approaches and is consistent with another recent cross-cultural study that failed to find clear evidence of an association between item scales and free-list tasks on moral and political attitudes [@white_karma_2019].
+
+To complicate matters further, in previous cross-cultural analyses on a data set of which the present one is a subset, the moral interest scale failed to predict individual-level behavior in two different economic games involving more than 2000 participants from 15 diverse field sites [@lang2019moralizing]. This finding casts doubt on either a) the hypothesis that moral salience of a deity \textit{per se} is associated with cooperative tendencies on the individual level, b) the prospect of using item response scales to capture individual-level variation relevant to this domain, or c) both. An additional downside to item response scales identified by this cross-cultural research is that Likert scales are not intuitive for some peoples relatively isolated from Western influence [cf., @apicella2018high; @purzycki_cross-cultural_2016; @purzycki_moralization_bias], a limitation that does not apply to oral free-listing [@quinlan2017freelisting].
+
+In summary, in contrast to pre-fabricated item response scales, free-listing is an unambiguous measure of pools of cognitive and cultural information; participants drawn from the same sample independently tend to exhibit convergence with regard to their mental models, given a valid topic [see e.g., @bendixen_minds_nodate; @purzycki_bendixen_tuva; @purzyckimorality; @willard_rewarding_2020]. Free-listing is also arguably a more natural analog to how people in their day-to-day lives socially express, transmit, and exchange mental representations. For these reasons, we encourage researchers interested in measuring cognitive and cultural models to include alongside an item response scale a corresponding free-list task so as to ensure that their scales have explanatory power above and beyond a measure of task-specific item response behavior.
+
+# General Discussion and Conclusion
+\noindent Here, we have 1) offered a tutorial on how to prepare and statistically model salience scores from a free-list task in Bayesian regression with various predictor terms (i.e., a binary predictor in Part One and a continuous and a categorical predictor in Part Two, respectively) using readily-available computational tools, and 2) demonstrated the real-world applicability of this workflow by empirically assessing within-subject agreement between a free-list task and an item response scale on religious beliefs with a cross-culturally diverse sample. We failed to find evidence of a clear and consistent relationship between these two instruments, and discussed some possibilities as to what might explain this finding, at least in the particular domain of religious beliefs. At the very least, the presently reported results call for further research into the cognitive processes underlying item response scales and free-list tasks and pose an exciting challenge for field researchers, psychologists, and cognitive scientists to solve in future collaborative efforts. Another potential avenue for future research is to develop a principled and broadly implementable workflow for handling missing values in free-list tasks, accounting for uncertainty in an item's list position, as well as relating individual-level probability distributions of responses to a target population of interest [cf., @deffner_rohrer_mcelreath_2021].
+
+Further, in terms of how to measure and model individual-level and cross-cultural variation in mental representations (e.g., beliefs, attitudes, values), we want to stress that the present work has ramifications that reach beyond the scholarly field in which the presented case study was conceived. For instance, there is arguably untapped potential in employing free-list tasks in measuring not only religious beliefs, but also beliefs and attitudes on science [e.g., @bendixen_how_2020], morality [e.g., @purzyckimorality; @white_karma_2019], health [e.g., @quinlan2017freelisting], as well as political, ideological, and economic issues [e.g., @bendixen_sense_2019; @white_karma_2019], disciplinary areas in which item response scales are extremely common but oftentimes not externally or cross-task verified. Here too, the free-list task could serve as a convenient measure of cross-task robustness or as a methodological tool to explore whether these two tasks indeed tap into distinct cognitive processes. As such, the original analysis reported herein is synergistic with the scope of the outlined tutorial; the reported null results emphasize a heightened need for attempts at cross-task verification of item response scales across disciplines. This in turn highlights the inevitability of engaging in detailed and rigorous ethnographic[^ethno] data collection and, thereby, motivates the dissemination of principled and implementable guidelines on how to model such data, including free-list outcomes, as alternative or complimentary instruments to item response scales.
+
+[^ethno]: By 'ethnographic' we mean simply 'the processes and products of research that document what people know, feel, and do in a way that situates those phenomena at specific times in the history of individual lives' [@handwerker_quick_2001, p. 7].
+
+More generally, zero-one bounded and inflated data are commonplace in many applied contexts. For instance, social scientists employ visual slider scales, 'feeling thermometers', and other (semi-)continuous indices whereby participants rate their sentiments with regards to some item, claim, or public person, and medical scientists use 'pain scales' to gauge patients' subjective levels of discomfort and pain. Moreover, proportions and rates are ubiquitous across the social and life sciences [e.g., @douma_analysing_2019; @kubinec_2020; @liu_zero-one-ated_2020; @santos_bayesian_2015; @queiroz_broad_2021]. These and similar data would often have properties well-captured by the zero-one inflated beta distribution or the ordered beta distribution. We encourage researchers to carefully consider the processes that might have generated their data and, on this basis, fit several models of varying complexity and functional form following an iterative (Bayesian) workflow of model fitting, diagnosing, checking, comparison, tuning, and eventual inference [@gelman_bayesian_2020]. Such a workflow does not have as its end goal the selection of a one 'best' model; rather, like peering at white light through a prism, the successes and failures of fitting many different models often lead to insights easily overlooked by simply fitting one or a few.
+
+\newpage
+# Author contributions {-}
+\noindent T.B. and B.G.P. conceptualized the manuscript. B.G.P. managed data collection for the greater project from which we analyzed a subset. T.B. wrote the manuscript and conducted all analyses with critical inputs from B.G.P.
+
+# Acknowledgements {-}
+\noindent We thank Aaron D. Lightner and Matti Vuorre for comments on earlier drafts. We thank Aarhus University Research Foundation for financial support.
+
+# Data Availability {-}
+\noindent Data and code to reproduce this manuscript is available at: \url{https://github.com/tbendixen/freelist-tutorial}.
+
+# References {-}
+
+<div id="refs"></div>

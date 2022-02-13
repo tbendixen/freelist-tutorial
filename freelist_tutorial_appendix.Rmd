@@ -1,0 +1,1757 @@
+---
+title: 'Supplementary Materials: Cognitive and cultural models in psychological science'
+shorttitle: 'Free-list tutorial (Supplementary)'
+author:
+  - name: 'Theiss Bendixen'
+    affiliation: "a"
+    corresponding: yes
+    email: 'tb@cas.au.dk'
+  - name: 'Benjamin Grant Purzycki'
+    affiliation: "a"
+    email: 'bgpurzycki@gmail.com'
+affiliation:
+  - id: a
+    institution: '\textit{Department of the Study of Religion, Aarhus University, Denmark}'
+class: doc
+output:
+  papaja::apa6_pdf: 
+    highlight: default # intro to papaja: https://crsh.github.io/papaja_man/introduction.html
+header-includes:
+   - \usepackage{float} # ensures figures and tables are kept in place
+lineno: yes
+figsintext: true
+numbersections: true
+bibliography: [tutorial-bib.bib, grateful-refs.bib]
+---
+
+```{r lockfile, include=FALSE, cache=FALSE}
+# to initialize and embed the package environment generates the call renv::use(...) below, run:
+# renv::embed()
+
+renv::use(
+  "BH@1.75.0-0",
+  "Brobdingnag@1.2-6",
+  "DBI@1.1.2",
+  "DT@0.20",
+  "GGally@2.1.2",
+  "HDInterval@0.2.2",
+  "MASS@7.3-54",
+  "Matrix@1.3-4",
+  "Pakillo/grateful@HEAD",
+  "R6@2.5.1",
+  "RColorBrewer@1.1-2",
+  "Rcpp@1.0.8",
+  "RcppEigen@0.3.3.9.1",
+  "RcppParallel@5.1.5",
+  "StanHeaders@2.21.0-7",
+  "abind@1.4-5",
+  "alastair-JL/AnthroTools@HEAD",
+  "arrayhelpers@1.1-0",
+  "askpass@1.1",
+  "assertthat@0.2.1",
+  "backports@1.4.1",
+  "base64enc@0.1-3",
+  "bayesplot@1.8.1",
+  "bdsmatrix@1.3-4",
+  "bit64@4.0.5",
+  "bit@4.0.4",
+  "blob@1.2.2",
+  "bookdown@0.24",
+  "boot@1.3-28",
+  "bridgesampling@1.1-2",
+  "brms@2.16.3",
+  "bslib@0.3.1",
+  "cachem@1.0.6",
+  "callr@3.7.0",
+  "cellranger@1.1.0",
+  "checkmate@2.0.0",
+  "cli@3.1.1",
+  "clipr@0.7.1",
+  "coda@0.19-4",
+  "codetools@0.2-18",
+  "colorspace@2.0-2",
+  "colourpicker@1.1.1",
+  "commonmark@1.7",
+  "cpp11@0.4.2",
+  "crayon@1.4.2",
+  "crosstalk@1.2.0",
+  "crsh/papaja@HEAD",
+  "curl@4.3.2",
+  "data.table@1.14.2",
+  "dbplyr@2.1.1",
+  "desc@1.4.0",
+  "digest@0.6.29",
+  "distributional@0.3.0",
+  "dplyr@1.0.7",
+  "dtplyr@1.2.1",
+  "dygraphs@1.1.1.6",
+  "ellipsis@0.3.2",
+  "evaluate@0.14",
+  "extraDistr@1.9.1",
+  "fansi@1.0.2",
+  "farver@2.1.0",
+  "fastmap@1.1.0",
+  "finalfit@1.0.4",
+  "fontawesome@0.2.2",
+  "forcats@0.5.1",
+  "fs@1.5.2",
+  "future@1.23.0",
+  "gargle@1.2.0",
+  "generics@0.1.2",
+  "ggExtra@0.9",
+  "ggdist@3.0.1",
+  "ggplot2@3.3.5",
+  "ggridges@0.5.3",
+  "globals@0.14.0",
+  "glue@1.6.1",
+  "googledrive@2.0.0",
+  "googlesheets4@1.0.0",
+  "gridExtra@2.3",
+  "gtable@0.3.0",
+  "gtools@3.9.2",
+  "haven@2.4.3",
+  "highr@0.9",
+  "hms@1.1.1",
+  "htmltools@0.5.2",
+  "htmlwidgets@1.5.4",
+  "httpuv@1.6.5",
+  "httr@1.4.2",
+  "ids@1.0.1",
+  "igraph@1.2.11",
+  "inline@0.3.19",
+  "isoband@0.2.5",
+  "jquerylib@0.1.4",
+  "jsonlite@1.7.3",
+  "knitr@1.37",
+  "labeling@0.4.2",
+  "later@1.3.0",
+  "lattice@0.20-45",
+  "lazyeval@0.2.2",
+  "lifecycle@1.0.1",
+  "listenv@0.8.0",
+  "lme4@1.1-27.1",
+  "loo@2.4.1",
+  "lubridate@1.8.0",
+  "magrittr@2.0.2",
+  "markdown@1.1",
+  "matrixStats@0.61.0",
+  "mgcv@1.8-38",
+  "mice@3.14.0",
+  "mime@0.12",
+  "miniUI@0.1.1.1",
+  "minqa@1.2.4",
+  "modelr@0.1.8",
+  "munsell@0.5.0",
+  "mvtnorm@1.1-3",
+  "nleqslv@3.3.2",
+  "nlme@3.1-153",
+  "nloptr@1.2.2.2",
+  "numDeriv@2016.8-1.1",
+  "openssl@1.4.5",
+  "pROC@1.18.0",
+  "packrat@0.7.0",
+  "parallelly@1.29.0",
+  "patchwork@1.1.1",
+  "pillar@1.7.0",
+  "pkgbuild@1.3.1",
+  "pkgconfig@2.0.3",
+  "plyr@1.8.6",
+  "posterior@1.2.0",
+  "prettyunits@1.1.1",
+  "processx@3.5.2",
+  "progress@1.2.2",
+  "promises@1.2.0.1",
+  "ps@1.6.0",
+  "purrr@0.3.4",
+  "rappdirs@0.3.3",
+  "readr@2.1.1",
+  "readxl@1.3.1",
+  "rematch2@2.1.2",
+  "rematch@1.0.1",
+  "remotes@2.4.2",
+  "renv@0.15.2",
+  "reprex@2.0.1",
+  "reshape2@1.4.4",
+  "reshape@0.8.8",
+  "rlang@1.0.1",
+  "rmarkdown@2.11",
+  "rmdfiltr@0.1.3",
+  "rprojroot@2.0.2",
+  "rsconnect@0.8.25",
+  "rstan@2.21.3",
+  "rstantools@2.1.1",
+  "rstudioapi@0.13",
+  "rvest@1.0.2",
+  "sass@0.4.0",
+  "scales@1.1.1",
+  "selectr@0.4-2",
+  "shiny@1.7.1",
+  "shinyjs@2.1.0",
+  "shinystan@2.5.0",
+  "shinythemes@1.2.0",
+  "sourcetools@0.1.7",
+  "stringi@1.7.6",
+  "stringr@1.4.0",
+  "survival@3.2-13",
+  "svUnit@1.0.6",
+  "sys@3.4",
+  "tensorA@0.36.2",
+  "threejs@0.3.3",
+  "tibble@3.1.6",
+  "tidybayes@3.0.2",
+  "tidymodels/broom@HEAD",
+  "tidyr@1.2.0",
+  "tidyselect@1.1.1",
+  "tidyverse@1.3.1",
+  "tinytex@0.36",
+  "tzdb@0.2.0",
+  "utf8@1.2.2",
+  "uuid@1.0-3",
+  "vctrs@0.3.8",
+  "viridisLite@0.4.0",
+  "vroom@1.5.7",
+  "withr@2.4.3",
+  "xfun@0.29",
+  "xml2@1.3.2",
+  "xtable@1.8-4",
+  "xts@0.12.1",
+  "yaml@2.2.2",
+  "zip@2.2.0",
+  "zoo@1.8-9"
+)
+```
+
+```{r load, message=FALSE, warning=FALSE, include=FALSE, results="hide", cache = FALSE}
+### Load packages
+library(AnthroTools) # for free-list data analysis
+library(papaja) # for APA template for R Markdown
+library(brms) # for Bayesian multilevel modeling
+library(ggplot2) # for plotting
+library(tidyverse) # for plotting and wrangling
+library(bayesplot) # for plotting
+library(tidybayes) # for plotting and wrangling
+library(modelr)  # for plotting
+library(RColorBrewer) # for plotting
+library(patchwork) # for panel plots
+library(finalfit) # for the round_tidy function, ensures trailing zeros are kept in rounding
+library(ggExtra) # for plotting of marginal distribution
+library(future) # for parallelization of K-fold cross-validation
+library(extraDistr) # for non-base R distribution functions
+library(loo) # for model comparison
+library(knitr) # for rendering the manuscripts
+library(rstan) # for fitting Stan models directly
+library(grateful) # for citing packages
+
+### Increase memory limit
+memory.limit(size=56000)
+
+### RStan and loo global options
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = TRUE)
+
+if (file.exists("all_main_mods.RData")) base::load(file = "all_main_mods.RData") # loading all main models (required to run appendix script)
+# if (file.exists("all_supps_mods.RData")) base::load(file = "all_supps_mods.RData") # loading all supplementary models
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  cache = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  error = TRUE,
+  cache.comments = FALSE
+)
+
+```
+
+# Overview {-}
+In Appendix A, we implement an alternative likelihood to the zero-one inflated beta, namely the *ordered beta* distribution. For technical details and background, see @kubinec_2020 and for practical implementation, see \url{https://github.com/saudiwin/ordbetareg} and source code for present supplementary document. 
+
+In Appendix B, we illustrate and implement alternative likelihood models that do not require transforming free-list data to salience scores, as discussed briefly in the main manuscript. We integrate key code chunks in the text but refer to the source code for full reproducible code. For simplicity, we restrict the examples to the Model 1 data and exclude field-site specific 'random effects' in all models.
+
+In Appendix C, we first present plots for Models 3-8 (Figures \ref{fig:scat-plots-bgd-supps} and \ref{fig:scat-plots-lgd-supps}). Then, we present results for the reduced models, where only non-zero free-list responses are retained (Figures \ref{fig:scat-plots-gen-reduced}--\ref{fig:scat-plots-lgd-reduced}). Finally, we present results from leave-one-group-out cross-validation (Table \ref{tab:logo-tab}), an alternative model comparison to the approximate leave-one-out cross-validation as presented in the main manuscript.
+
+In Appendix D, we list `R` packages, their dependencies, and version number used for this project.
+
+\newpage
+
+# Appendix A: The ordered beta distribution {-}
+
+\noindent Here's an excerpt from @kubinec_2020 outlining the gist of the ordered beta:
+
+>[the ordered beta] employ[s] ordered cutpoints, similar in spirit to an ordered logit model, to estimate the joint probability of 0s (the lower bound), continuous proportions, and 1s (the upper bound) in bounded continuous data. As only one predictive model is used for all of the outcomes, the effect of covariates is identified across discrete and continuous observations without resulting in over-fitting. The use of cutpoints permits the model to fit distributions with mostly discrete observations or no discrete observations at all, which makes it a general solution to this problem. (p. 2)
+
+The two cutpoints represent the points (including an uncertainty interval) at which there's a 50\% change that a response is 0 and 1, respectively. In the context of our case study, the ZOIB and the ordered beta yield similar inferences and posterior predictions (Figures \ref{fig:ordbeta-m1-m2-scat-plots} -- \ref{fig:scat-plots-lgd-ordbeta} and Table \ref{tab:ordered-beta-tab}).
+
+```{r ordbeta-custom, include=FALSE}
+### Ordered beta regression
+ord_beta_reg <- custom_family("ord_beta_reg",
+                              dpars=c("mu","phi","cutzero","cutone"),
+                              links=c("logit","log",NA,NA),
+                              lb=c(NA,0,NA,NA),
+                              type="real")
+# stan code for density of the model
+stan_funs <- "real ord_beta_reg_lpdf(real y, real mu, real phi, real cutzero, real cutone) {
+    //auxiliary variables
+    real mu_logit = logit(mu);
+    vector[2] thresh;
+    thresh[1] = cutzero;
+    thresh[2] = cutzero + exp(cutone);
+    
+  if(y==0) {
+      return log1m_inv_logit(mu_logit - thresh[1]);
+    } else if(y==1) {
+      return log_inv_logit(mu_logit  - thresh[2]);
+    } else {
+      return log(inv_logit(mu_logit  - thresh[1]) - inv_logit(mu_logit - thresh[2])) +
+                beta_proportion_lpdf(y|mu,phi);
+    }
+  }"
+stanvars <- stanvar(scode=stan_funs,block="functions")
+# For pulling posterior predictions
+posterior_predict_ord_beta_reg <- function(i, draws, ...) {
+  mu <- draws$dpars$mu[, i]
+  phi <- draws$dpars$phi
+  cutzero <- draws$dpars$cutzero
+  cutone <- draws$dpars$cutone
+  N <- length(phi)
+  
+  thresh1 <- cutzero
+  thresh2 <- cutzero + exp(cutone)
+  pr_y0 <- 1 - plogis(qlogis(mu) - thresh1)
+  pr_y1 <- plogis(qlogis(mu) - thresh2)
+  pr_cont <- plogis(qlogis(mu)-thresh1) - plogis(qlogis(mu) - thresh2)
+  out_beta <- rbeta(n=N,mu*phi,(1-mu)*phi)
+  
+  # now determine which one we get for each observation
+  outcomes <- sapply(1:N, function(i) {
+    sample(1:3,size=1,prob=c(pr_y0[i],pr_cont[i],pr_y1[i]))
+  })
+  
+  final_out <- sapply(1:length(outcomes),function(i) {
+    if(outcomes[i]==1) {
+      return(0)
+    } else if(outcomes[i]==2) {
+      return(out_beta[i])
+    } else {
+      return(1)
+    }
+  })
+  
+  final_out
+  
+}
+# for calculating marginal effects/conditional expectations
+posterior_epred_ord_beta_reg <- function(draws) {
+  cutzero <- draws$dpars$cutzero
+  cutone <- draws$dpars$cutone
+  
+  mu <- draws$dpars$mu
+  
+  thresh1 <- cutzero
+  thresh2 <- cutzero + exp(cutone)
+  
+  low <- 1 - plogis(qlogis(mu) - thresh1)
+  middle <- plogis(qlogis(mu)-thresh1) - plogis(qlogis(mu) - thresh2)
+  high <- plogis(qlogis(mu) - thresh2)
+  
+  low*0 + middle*mu + high
+}
+# for calcuating LOO and Bayes Factors
+log_lik_ord_beta_reg <- function(i, draws) {
+  mu <- draws$dpars$mu[,i]
+  phi <- draws$dpars$phi
+  y <- draws$data$Y[i]
+  cutzero <- draws$dpars$cutzero
+  cutone <- draws$dpars$cutone
+  
+  thresh1 <- cutzero
+  thresh2 <- cutzero + exp(cutone)
+  if(y==0) {
+    out <- log(1 - plogis(qlogis(mu) - thresh1))
+  } else if(y==1) {
+    out <- log(plogis(qlogis(mu) - thresh2))
+  } else {
+    out <- log(plogis(qlogis(mu)-thresh1) - plogis(qlogis(mu) - thresh2)) + dbeta(y,mu*phi,(1-mu)*phi,log=T)
+  }
+  
+  out
+  
+}
+
+```
+
+```{r ordbeta-priors, include=FALSE}
+priors_ordbeta <- set_prior("normal(0,2.5)",class="b") + # for model without predictors on phi
+  prior("normal(0,1)",class="b",coef="Intercept") +
+  prior_string("target += normal_lpdf((cutzero + exp(cutone)) - cutzero|0,3) + cutone",check=F) +
+  set_prior("exponential(.1)",class="phi") + 
+  set_prior("lkj_corr_cholesky(4)", class = "cor") + 
+  set_prior("exponential(1)", class = "sd") +
+  set_prior("normal(0,1)", class = "cutone") +
+  set_prior("normal(0,1)", class = "cutzero")
+```
+
+```{r ordbeta-prior-check-fit, include=FALSE}
+# Simulate from priors and main model, without predictors on phi
+m1_ordbeta_priorcheck <- brm(y ~ 0 + Intercept + scale + (scale|culture),
+                             prior = priors_ordbeta,
+                             data = bgd_gen_data,
+                             family = ord_beta_reg,
+                             stanvars = stanvars,
+                             sample_prior = "only") # only sample prior for prior predictions
+```
+
+```{r ordbeta-prior-check-plot, include=FALSE}
+# Plot simulated priors against observed outcome
+set.seed(2021)
+pp_check(m1_ordbeta_priorcheck, ndraws = 30) # global prior pred check
+
+```
+
+```{r ordbeta-model1, include=FALSE}
+### Model 1, ordered beta
+m1_ordbeta <- brm(formula = y ~ 0 + Intercept + scale + (scale|culture),
+                            data = bgd_gen_data,
+                            prior = priors_ordbeta,
+                            family = ord_beta_reg,
+                            stanvars = stanvars,
+                            cores = 4, chains = 4, iter = 6000, control = list(adapt_delta = 0.99),
+                            seed = 2021, save_pars = save_pars(all = TRUE))
+```
+
+```{r ordbeta-model2, include=FALSE}
+### Model 2, ordered beta
+m2_ordbeta <- stats::update(m1_ordbeta, newdata = lgd_gen_data)
+```
+
+```{r ordbeta-spec-priors, include=FALSE}
+### set priors for ordered beta models of specific codes
+priors_spec_ordbeta <- set_prior("normal(0,.125)",class="b") + # for model without predictors on phi
+  prior("normal(0,1)",class="b",coef="Intercept") +
+  prior_string("target += normal_lpdf((cutzero + exp(cutone)) - cutzero|0,3) + cutone",check=F) +
+  set_prior("exponential(.1)",class="phi") + 
+  set_prior("lkj_corr_cholesky(4)", class = "cor") + 
+  set_prior("exponential(1)", class = "sd") +
+  set_prior("normal(0,1)", class = "cutone") +
+  set_prior("normal(0,1)", class = "cutzero") +
+  set_prior("dirichlet(2,2,2,2)", class="simo", coef="moscale1")
+```
+
+```{r ordbeta-model3, include=FALSE}
+### Model 3, ordered beta: stealing, moralistic gods
+m3_ordbeta <- brm(bf( 
+  y ~ 0 + Intercept + mo(scale) + (mo(scale)|culture)),
+  data = bgd_stl_data,
+  prior = priors_spec_ordbeta,
+  family = ord_beta_reg,
+  stanvars = stanvars,
+  cores = 4, chains = 4, iter = 6000, control = list(adapt_delta = 0.99),
+  seed = 2021, save_pars = save_pars(all = TRUE))
+```
+
+```{r ordbeta-model4, include=FALSE}
+### Model 4, ordered beta: murder, moralistic gods
+m4_ordbeta <- stats::update(m3_ordbeta, newdata = bgd_murd_data)
+```
+
+```{r ordbeta-model5, include=FALSE}
+### Model 5, ordered beta: lies, moralistic gods
+m5_ordbeta <- stats::update(m3_ordbeta, newdata = bgd_lie_data)
+```
+
+```{r ordbeta-model6, include=FALSE}
+### Model 6, ordered beta: stealing, local gods
+m6_ordbeta <- stats::update(m3_ordbeta, newdata = lgd_stl_data)
+```
+
+```{r ordbeta-model7, include=FALSE}
+### Model 7, ordered beta: murder, local gods
+m7_ordbeta <- stats::update(m3_ordbeta, newdata = lgd_murd_data)
+```
+
+```{r ordbeta-model8, include=FALSE}
+### Model 8, ordered beta: lies, local gods
+m8_ordbeta <- stats::update(m3_ordbeta, newdata = lgd_lie_data)
+
+```
+
+```{r ordbeta-m1-m2-scat-plots, echo=FALSE, fig.height=8, fig.width=8, fig.cap = "\\textbf{Ordered beta models}. Posterior predictions for each field site and each deity from the ordered beta Model 1 and 2 on the relationship between the moral interest scale (*x*-axis) and salience of the free-listed general Morality code (*y*-axis). Lines are draws of expected values from the posterior predictive distribution. Raw data points are slightly jittered."}
+
+set.seed(2021)
+bgd_fig_ordbeta <- gen_epred_plot(bgd_gen_data, m1_ordbeta) + 
+  ggtitle('MORALISTIC GODS')
+set.seed(NULL)
+
+set.seed(2021)
+lgd_fig_ordbeta <- gen_epred_plot(lgd_gen_data, m2_ordbeta) + 
+  ggtitle('LOCAL GODS')
+set.seed(NULL)
+
+(bgd_fig_ordbeta) + (lgd_fig_ordbeta) +
+  patchwork::plot_layout(ncol = 1, nrow = 2)
+
+```
+
+```{r spec-epred-flot-fun, echo=FALSE}
+# Plotting function for monotonic predictors
+spec_epred_plot <- function(dat, model){
+  data <- dat
+  data$scale <- as.integer(data$scale)-1 # reverting the variable back to the original scale after having fitted as ordered factors
+  data %>%
+    group_by(culture) %>%
+    data_grid(scale = seq_range(0:4, n = 5)) %>%
+    add_epred_draws(model, ndraws = 100, re_formula = NULL, dpar = TRUE, 
+                    allow_new_levels = TRUE, 
+                    sample_new_levels = "uncertainty") %>% # see ?prepare_predictions for details
+    ggplot(aes(x = scale, y = y)) +
+    geom_line(aes(y = .epred,
+                  group = paste(culture, .draw)), alpha = 1/10, color = "#08519C") +
+    geom_point(data = na.omit(data), size = 3, shape = 1, color = "black", 
+               position = position_jitter(width = 0.05, height = 0.01, seed = 2021)) +
+    facet_wrap(~na.omit(culture), nrow = 2, drop = FALSE) + 
+    scale_fill_brewer() +
+    theme_bw() +
+    theme(strip.background = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank(),
+          strip.text.x = element_text(
+              size = 10, face = "bold"),
+          legend.position = "none") + 
+    scale_y_continuous(limits=c(-0.05,1.05), breaks=c(0,0.5,1), name = "Free-listed moral item (Salience)") + 
+    scale_x_continuous(limits=c(-0.05,4.05), name = "Moral Interest Scale item")
+}
+```
+
+
+```{r scat-plots-bgd-ordbeta, echo = FALSE, fig.height=10, fig.width=8, fig.cap = "\\textbf{Ordered beta models}. Posterior predictions for each field site from the ordered beta Model 3 through 5 on the relationship between the moral interest scale items (*x*-axis) and salience of the corresponding free-listed code (*y*-axis). Lines are draws of expected values from the posterior predictive distributions. Raw data points are slightly jittered."}
+
+set.seed(2021)
+bgd_stl_fig_ordbeta <- spec_epred_plot(bgd_stl_data, m3_ordbeta) + 
+  ggtitle('MORALISTIC GODS: Stealing')
+set.seed(NULL)
+
+set.seed(2021)
+bgd_murd_fig_ordbeta <- spec_epred_plot(bgd_murd_data, m4_ordbeta) + 
+  ggtitle('MORALISTIC GODS: Murder')
+set.seed(NULL)
+
+set.seed(2021)
+bgd_lie_fig_ordbeta <- spec_epred_plot(bgd_lie_data, m5_ordbeta) + 
+  ggtitle('MORALISTIC GODS: Lying')
+set.seed(NULL)
+
+(bgd_stl_fig_ordbeta) + (bgd_murd_fig_ordbeta) + (bgd_lie_fig_ordbeta) +
+  patchwork::plot_layout(ncol = 1, nrow = 3)
+
+```
+
+```{r scat-plots-lgd-ordbeta, echo=FALSE, fig.height=10, fig.width=8, fig.cap = "\\textbf{Ordered beta models}. Posterior predictions for each field site from ordered beta Model 6 through 8 on the relationship between the moral interest scale items (*x*-axis) and salience of the corresponding free-listed code (*y*-axis). Lines are draws of expected values from the posterior predictive distributions. Raw data points are slightly jittered."}
+
+set.seed(2021)
+lgd_stl_fig_ordbeta <- spec_epred_plot(lgd_stl_data, m6_ordbeta) + 
+  ggtitle('LOCAL GODS: Stealing')
+set.seed(NULL)
+
+set.seed(2021)
+lgd_murd_fig_ordbeta <- spec_epred_plot(lgd_murd_data, m7_ordbeta) + 
+  ggtitle('LOCAL GODS: Murder')
+set.seed(NULL)
+
+set.seed(2021)
+lgd_lie_fig_ordbeta <- spec_epred_plot(lgd_lie_data, m8_ordbeta) + 
+  ggtitle('LOCAL GODS: Lying')
+set.seed(NULL)
+
+(lgd_stl_fig_ordbeta) + (lgd_murd_fig_ordbeta) + (lgd_lie_fig_ordbeta) +
+  patchwork::plot_layout(ncol = 1, nrow = 3)
+
+```
+
+```{r ordbeta-model-null-priors, include=FALSE}
+### Model comparison with "null" models ###
+
+### Priors for "null" model
+priors_ordbeta_null <- # for model without predictors on phi
+  prior("normal(0,1)",class="b",coef="Intercept") +
+  prior_string("target += normal_lpdf((cutzero + exp(cutone)) - cutzero|0,3) + cutone",check=F) +
+  set_prior("exponential(.1)",class="phi") + 
+  set_prior("exponential(1)", class = "sd") +
+  set_prior("normal(0,1)", class = "cutone") +
+  set_prior("normal(0,1)", class = "cutzero")
+```
+
+```{r ordbeta-model1-null, include=FALSE}
+### Model 1, ordered beta, without predictors on phi: general morality, moralistic gods ###
+m1_ordbeta_null <- brm(formula = 
+  y ~ 0 + Intercept + (1|culture),
+  data = bgd_gen_data,
+  prior = priors_ordbeta_null,
+  family = ord_beta_reg,
+  stanvars = stanvars,
+  cores = 4, chains = 4, iter = 6000, control = list(adapt_delta = 0.99),
+  seed = 2021, save_pars = save_pars(all = TRUE))
+```
+
+```{r ordbeta-model1-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m1_ordbeta <- loo(m1_ordbeta, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m1_ordbeta_null <- loo(m1_ordbeta_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m1_ordbeta, loo_m1_ordbeta_null)
+round(model_weights(m1_ordbeta, m1_ordbeta_null, weights = "loo"), 3)
+```
+
+```{r ordbeta-model2-null, include=FALSE}
+### Model 2, ordered beta, "null"
+m2_ordbeta_null <- stats::update(m1_ordbeta_null, newdata = lgd_gen_data)
+```
+
+```{r ordbeta-model2-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m2_ordbeta <- loo(m2_ordbeta, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m2_ordbeta_null <- loo(m2_ordbeta_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m2_ordbeta, loo_m2_ordbeta_null)
+round(model_weights(m2_ordbeta, m2_ordbeta_null, weights = "loo"), 3)
+```
+
+```{r ordbeta-model3-null, include=FALSE}
+### Model 3, ordered beta, "null"
+m3_ordbeta_null <- stats::update(m1_ordbeta_null, newdata = bgd_stl_data)
+```
+
+```{r ordbeta-model3-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m3_ordbeta <- loo(m3_ordbeta, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m3_ordbeta_null <- loo(m3_ordbeta_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m3_ordbeta, loo_m3_ordbeta_null)
+round(model_weights(m3_ordbeta, m3_ordbeta_null, weights = "loo"), 3)
+```
+
+```{r ordbeta-model4-null, include=FALSE}
+### Model 4, ordered beta, "null"
+m4_ordbeta_null <- stats::update(m1_ordbeta_null, newdata = bgd_murd_data)
+```
+
+```{r ordbeta-model4-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m4_ordbeta <- loo(m4_ordbeta, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m4_ordbeta_null <- loo(m4_ordbeta_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m4_ordbeta, loo_m4_ordbeta_null)
+round(model_weights(m4_ordbeta, m4_ordbeta_null, weights = "loo"), 3)
+```
+
+```{r ordbeta-model5-null, include=FALSE}
+### Model 5, ordered beta, "null"
+m5_ordbeta_null <- stats::update(m1_ordbeta_null, newdata = bgd_lie_data)
+```
+
+```{r ordbeta-model5-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m5_ordbeta <- loo(m5_ordbeta, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m5_ordbeta_null <- loo(m5_ordbeta_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m5_ordbeta, loo_m5_ordbeta_null)
+round(model_weights(m5_ordbeta, m5_ordbeta_null, weights = "loo"), 3)
+```
+
+```{r ordbeta-model6-null, include=FALSE}
+### Model 6, ordered beta, "null"
+m6_ordbeta_null <- stats::update(m1_ordbeta_null, newdata = lgd_stl_data)
+```
+
+```{r ordbeta-model6-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m6_ordbeta <- loo(m6_ordbeta, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m6_ordbeta_null <- loo(m6_ordbeta_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m6_ordbeta, loo_m6_ordbeta_null)
+round(model_weights(m6_ordbeta, m6_ordbeta_null, weights = "loo"), 3)
+```
+
+```{r ordbeta-model7-null, include=FALSE}
+### Model 7, ordered beta, "null"
+m7_ordbeta_null <- stats::update(m1_ordbeta_null, newdata = lgd_murd_data)
+```
+
+```{r ordbeta-model7-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m7_ordbeta <- loo(m7_ordbeta, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m7_ordbeta_null <- loo(m7_ordbeta_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m7_ordbeta, loo_m7_ordbeta_null)
+round(model_weights(m7_ordbeta, m7_ordbeta_null, weights = "loo"), 3)
+```
+
+```{r ordbeta-model8-null, include=FALSE}
+### Model 8, ordered beta, "null"
+m8_ordbeta_null <- stats::update(m1_ordbeta_null, newdata = lgd_lie_data)
+```
+
+```{r ordbeta-model8-loo, include=FALSE}
+# Approximate leave-one-out cross-validation
+(loo_m8_ordbeta <- loo(m8_ordbeta, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+(loo_m8_ordbeta_null <- loo(m8_ordbeta_null, moment_match = TRUE)) # moment_match = TRUE for problematic observations
+loo_compare(loo_m8_ordbeta, loo_m8_ordbeta_null)
+round(model_weights(m8_ordbeta, m8_ordbeta_null, weights = "loo"), 3)
+```
+
+```{r ordered-beta-tab-prep, echo=FALSE}
+### Extract estimates
+m1_ob_fixef <- as.data.frame(fixef(m1_ordbeta)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m1_ob_null_fixef <- as.data.frame(fixef(m1_ordbeta_null)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m1_ob_loo <- as.data.frame(model_weights(m1_ordbeta, m1_ordbeta_null, weights = "loo")) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m1_ob_elpd <- as.data.frame(t(loo_compare(loo_m1_ordbeta, loo_m1_ordbeta_null))) %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m2_ob_fixef <- as.data.frame(fixef(m2_ordbeta)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m2_ob_null_fixef <- as.data.frame(fixef(m2_ordbeta_null)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m2_ob_loo <- as.data.frame(model_weights(m2_ordbeta, m2_ordbeta_null, weights = "loo")) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m2_ob_elpd <- as.data.frame(t(loo_compare(loo_m2_ordbeta, loo_m2_ordbeta_null))) %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m3_ob_fixef <- as.data.frame(fixef(m3_ordbeta)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m3_ob_null_fixef <- as.data.frame(fixef(m3_ordbeta_null)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m3_ob_loo <- as.data.frame(model_weights(m3_ordbeta, m3_ordbeta_null, weights = "loo")) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m3_ob_elpd <- as.data.frame(t(loo_compare(loo_m3_ordbeta, loo_m3_ordbeta_null))) %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m4_ob_fixef <- as.data.frame(fixef(m4_ordbeta)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m4_ob_null_fixef <- as.data.frame(fixef(m4_ordbeta_null)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m4_ob_loo <- as.data.frame(model_weights(m4_ordbeta, m4_ordbeta_null, weights = "loo")) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m4_ob_elpd <- as.data.frame(t(loo_compare(loo_m4_ordbeta, loo_m4_ordbeta_null))) %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m5_ob_fixef <- as.data.frame(fixef(m5_ordbeta)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m5_ob_null_fixef <- as.data.frame(fixef(m5_ordbeta_null)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m5_ob_loo <- as.data.frame(model_weights(m5_ordbeta, m5_ordbeta_null, weights = "loo")) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m5_ob_elpd <- as.data.frame(t(loo_compare(loo_m5_ordbeta, loo_m5_ordbeta_null))) %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m6_ob_fixef <- as.data.frame(fixef(m6_ordbeta)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m6_ob_null_fixef <- as.data.frame(fixef(m6_ordbeta_null)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m6_ob_loo <- as.data.frame(model_weights(m6_ordbeta, m6_ordbeta_null, weights = "loo")) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m6_ob_elpd <- as.data.frame(t(loo_compare(loo_m6_ordbeta, loo_m6_ordbeta_null))) %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m7_ob_fixef <- as.data.frame(fixef(m7_ordbeta)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m7_ob_null_fixef <- as.data.frame(fixef(m7_ordbeta_null)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m7_ob_loo <- as.data.frame(model_weights(m7_ordbeta, m7_ordbeta_null, weights = "loo")) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m7_ob_elpd <- as.data.frame(t(loo_compare(loo_m7_ordbeta, loo_m7_ordbeta_null))) %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+m8_ob_fixef <- as.data.frame(fixef(m8_ordbeta)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m8_ob_null_fixef <- as.data.frame(fixef(m8_ordbeta_null)) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m8_ob_loo <- as.data.frame(model_weights(m8_ordbeta, m8_ordbeta_null, weights = "loo")) %>% mutate_if(is.numeric, round_tidy, digits=2)
+m8_ob_elpd <- as.data.frame(t(loo_compare(loo_m8_ordbeta, loo_m8_ordbeta_null))) %>% mutate_if(is.numeric, round_tidy, digits=2)
+
+```
+
+```{r, ordered-beta-tab, echo=FALSE}
+### Insert estimates in list
+
+ob_coef_list <- list(
+                Models = c("intercept", "slope",
+                                 "Akaike Weights", "ELPD difference [SE]"),
+                m1 = c(paste0(m1_ob_fixef[1:2,1], " [",m1_ob_fixef[1:2,3], ", ", m1_ob_fixef[1:2,4],"]"), 
+                        m1_loo[1,1], paste0(m1_ob_elpd$m1_ordbeta[1]," [", m1_ob_elpd$m1_ordbeta[2],"]")),
+                m1null = c(paste0(m1_ob_null_fixef[1,1], " [",m1_ob_null_fixef[1,3], ", ", m1_ob_null_fixef[1,4],"]"), 
+                        m1_loo[2,1], paste0(m1_ob_elpd$m1_ordbeta_null[1]," [", m1_ob_elpd$m1_ordbeta_null[2],"]")),
+                
+                m2 = c(paste0(m2_ob_fixef[1:2,1], " [",m2_ob_fixef[1:2,3], ", ", m2_ob_fixef[1:2,4],"]"), 
+                        m2_loo[1,1], paste0(m2_ob_elpd$m2_ordbeta[1]," [", m2_ob_elpd$m2_ordbeta[2],"]")),
+                m2null = c(paste0(m2_ob_null_fixef[1,1], " [",m2_ob_null_fixef[1,3], ", ", m2_ob_null_fixef[1,4],"]"), 
+                        m2_loo[2,1], paste0(m2_ob_elpd$m2_ordbeta_null[1]," [", m2_ob_elpd$m2_ordbeta_null[2],"]")),
+                
+                m3 = c(paste0(m3_ob_fixef[1:2,1], " [",m3_ob_fixef[1:2,3], ", ", m3_ob_fixef[1:2,4],"]"), 
+                        m3_loo[1,1], paste0(m3_ob_elpd$m3_ordbeta[1]," [", m3_ob_elpd$m3_ordbeta[2],"]")),
+                m3null = c(paste0(m3_ob_null_fixef[1,1], " [",m3_ob_null_fixef[1,3], ", ", m3_ob_null_fixef[1,4],"]"), 
+                        m3_loo[2,1], paste0(m3_ob_elpd$m3_ordbeta_null[1]," [", m3_ob_elpd$m3_ordbeta_null[2],"]")),
+                
+                m4 = c(paste0(m4_ob_fixef[1:2,1], " [",m4_ob_fixef[1:2,3], ", ", m4_ob_fixef[1:2,4],"]"), 
+                        m4_loo[1,1], paste0(m4_ob_elpd$m4_ordbeta[1]," [", m4_ob_elpd$m4_ordbeta[2],"]")),
+                m4null = c(paste0(m4_ob_null_fixef[1,1], " [",m4_ob_null_fixef[1,3], ", ", m4_ob_null_fixef[1,4],"]"), 
+                        m4_loo[2,1], paste0(m4_ob_elpd$m4_ordbeta_null[1]," [", m4_ob_elpd$m4_ordbeta_null[2],"]")),
+                
+                m5 = c(paste0(m5_ob_fixef[1:2,1], " [",m5_ob_fixef[1:2,3], ", ", m5_ob_fixef[1:2,4],"]"), 
+                        m5_loo[1,1], paste0(m5_ob_elpd$m5_ordbeta[1]," [", m5_ob_elpd$m5_ordbeta[2],"]")),
+                m5null = c(paste0(m5_ob_null_fixef[1,1], " [",m5_ob_null_fixef[1,3], ", ", m5_ob_null_fixef[1,4],"]"), 
+                        m5_loo[2,1], paste0(m5_ob_elpd$m5_ordbeta_null[1]," [", m5_ob_elpd$m5_ordbeta_null[2],"]")),
+                
+                m6 = c(paste0(m6_ob_fixef[1:2,1], " [",m6_ob_fixef[1:2,3], ", ", m6_ob_fixef[1:2,4],"]"), 
+                        m6_loo[1,1], paste0(m6_ob_elpd$m6_ordbeta[1]," [", m6_ob_elpd$m6_ordbeta[2],"]")),
+                m6null = c(paste0(m6_ob_null_fixef[1,1], " [",m6_ob_null_fixef[1,3], ", ", m6_ob_null_fixef[1,4],"]"), 
+                        m6_loo[2,1], paste0(m6_ob_elpd$m6_ordbeta_null[1]," [", m6_ob_elpd$m6_ordbeta_null[2],"]")),
+                
+                m7 = c(paste0(m7_ob_fixef[1:2,1], " [",m7_ob_fixef[1:2,3], ", ", m7_ob_fixef[1:2,4],"]"), 
+                        m7_loo[1,1], paste0(m7_ob_elpd$m7_ordbeta[1]," [", m7_ob_elpd$m7_ordbeta[2],"]")),
+                m7null = c(paste0(m7_ob_null_fixef[1,1], " [",m7_ob_null_fixef[1,3], ", ", m7_ob_null_fixef[1,4],"]"), 
+                        m7_loo[2,1], paste0(m7_ob_elpd$m7_ordbeta_null[1]," [", m7_ob_elpd$m7_ordbeta_null[2],"]")),
+                
+                m8 = c(paste0(m8_ob_fixef[1:2,1], " [",m8_ob_fixef[1:2,3], ", ", m8_ob_fixef[1:2,4],"]"), 
+                        m8_loo[1,1], paste0(m8_ob_elpd$m8_ordbeta[1]," [", m8_ob_elpd$m8_ordbeta[2],"]")),
+                m8null = c(paste0(m8_ob_null_fixef[1,1], " [",m8_ob_null_fixef[1,3], ", ", m8_ob_null_fixef[1,4],"]"), 
+                        m8_loo[2,1], paste0(m8_ob_elpd$m8_ordbeta_null[1]," [", m8_ob_elpd$m8_ordbeta_null[2],"]"))
+                )
+
+### Add double dash to null models, instead of beta coefs
+ob_coef_list[[3]] <- append(ob_coef_list[[3]], "--", after = 1)
+ob_coef_list[[5]] <- append(ob_coef_list[[5]], "--", after = 1)
+ob_coef_list[[7]] <- append(ob_coef_list[[7]], "--", after = 1)
+ob_coef_list[[9]] <- append(ob_coef_list[[9]], "--", after = 1)
+ob_coef_list[[11]] <- append(ob_coef_list[[11]], "--", after = 1)
+ob_coef_list[[13]] <- append(ob_coef_list[[13]], "--", after = 1)
+ob_coef_list[[15]] <- append(ob_coef_list[[15]], "--", after = 1)
+ob_coef_list[[17]] <- append(ob_coef_list[[17]], "--", after = 1)
+
+# convert list to data frame
+ob_coef_tab <- as.data.frame(ob_coef_list)
+
+# transpose
+t_ob_coef_tab <- t(as.data.frame(ob_coef_list))
+t_ob_coef_tab <- as.data.frame(t_ob_coef_tab)
+
+# mark the favored model with an asterisk
+t_ob_coef_tab$V4[t_ob_coef_tab$V4=="0.00 [0.00]"] <- "*"
+
+# move first row to column names and remove duplicate row
+colnames(t_ob_coef_tab) <- t_ob_coef_tab[1,]
+t_ob_coef_tab <- t_ob_coef_tab[-1, ]
+
+# set column names
+colnames(t_ob_coef_tab) <- c("Intercept", 
+                          "$\\beta^{\\textrm{Scale}}$",
+                           "Akaike Weights", 
+                          "ELPD difference [SE]")
+
+# set row names
+rownames(t_ob_coef_tab) <- c("\\texttt{m1\\_ordbeta}", "\\texttt{m1\\_ordbeta\\_null}", 
+                          "\\texttt{m2\\_ordbeta}", "\\texttt{m2\\_ordbeta\\_null}",
+                          "\\texttt{m3\\_ordbeta}", "\\texttt{m3\\_ordbeta\\_null}",
+                          "\\texttt{m4\\_ordbeta}", "\\texttt{m4\\_ordbeta\\_null}",
+                          "\\texttt{m5\\_ordbeta}", "\\texttt{m5\\_ordbeta\\_null}",
+                          "\\texttt{m6\\_ordbeta}", "\\texttt{m6\\_ordbeta\\_null}",
+                          "\\texttt{m7\\_ordbeta}", "\\texttt{m7\\_ordbeta\\_null}",
+                          "\\texttt{m8\\_ordbeta}", "\\texttt{m8\\_ordbeta\\_null}")
+
+# print table
+papaja::apa_table(t_ob_coef_tab, escape = FALSE, font_size = "small", booktabs = TRUE, align = c("l", rep("c", 5)),
+                  caption = "Focal parameter estimates for all ordered beta models and model comparison metrics.",
+                  note = "Point estimates of the $\\beta$ coefficients are posterior means with 95\\% credible intervals
+                  in brackets. The best performing model of the eight pairs is denoted by an asterisk.")
+
+
+```
+
+\newpage
+
+# Appendix B: Alternative likelihood models for free-list data {-}
+
+## Presence/absence {-}
+
+\noindent An analyst could be interested in simply modeling the presence and absence of some target item using a logistic (Bernoulli) regression. With `tableType = 'PRESENCE'` in `AnthroTools::FreeListTable()` we get a data frame with the presence (= 1) and absence (= 0) of all items listed across participants in our free-list data. We then extract the general 'Morality' code, combine this data with the scale responses, store it in the object `bgd_gen_data_bern`, and then fit a logistic regression with `brms`. A higher coefficient for `scale` is interpreted as a higher probability of listing 'Morality' as predicted by the moral interest scale. For practical applications, see e.g. @purzycki_bendixen_tuva and @purzycki_breaches_2020.
+
+```{r bern-prep, include=FALSE}
+### prepare free-list data for rank models
+
+# calculate salience
+BGD.max <- FreeListTable(BGDsub, CODE = "BGD", Order = "Order", 
+                         Salience = "BGD.S", Subj = "CERCID", 
+                         tableType = "PRESENCE")
+
+# move IDs from rownames to CERCID column
+BGD.max$CERCID <- rownames(BGD.max)
+
+# select and extract CERCID and MAX Salience for Morality
+BGDmergelabs <- c("CERCID", "Morality")
+BGDmerge1 <- BGD.max[BGDmergelabs]
+
+# extract CERCID, Culture/SITE and overall scale response (MGMEAN) from cerc
+BGDcerclabs <- c("CERCID", "SITE", "MGMEAN")
+BGDcerc <- cerc[BGDcerclabs]
+
+# merge with free-list data
+BGDmerge <- merge(BGDmerge1, BGDcerc, by.x = "CERCID")
+
+# only complete cases in final dataset
+BGDmerge <- BGDmerge[complete.cases(BGDmerge), ]
+
+# set column names
+BGDmerge <- setNames(BGDmerge, c("CERCID","BGD.max.S", "Culture", "MGMEAN"))
+
+# change and shorten data frame and variable names
+bgd_gen_data_bern <- BGDmerge
+cols <- c("id", "y", "culture", "scale")
+colnames(bgd_gen_data_bern) <- cols
+```
+
+```{r bern-model, echo = TRUE}
+m1_bern <- brm(
+  y ~ 1 + scale,
+  data = bgd_gen_data_bern,
+  family = bernoulli(),
+  cores = 4, chains = 4, 
+  iter = 1000, control = list(adapt_delta = 0.99),
+  seed = 2021)
+```
+
+\newpage
+
+## Number of 'successes' {-}
+
+\noindent With a binomial model, we can instead model the number of mentions of a target item given the total number of items listed per participant.  With `tableType = 'FREQUENCY'` in `AnthroTools::FreeListTable()` we get a data frame with the number of times each item was listed across participants in our free-list data. Using the `rowSums()` command on this data frame, we can get the total number of items listed per participant; this number will serve as the number of 'trials' `n` in our binomial model. We extract the general 'Morality' code (i.e., the number of times each participant listed 'Morality'), which is the 'successes' `y` in the binomial model, combine the successes and trials with the scale response, store the resulting data in `bgd_gen_data_bin`, and fit a binomial model to this data. 
+
+```{r bin-prep, include=FALSE}
+### BINOMIAL (number of target items listed given total number of items listed)
+
+# calculate salience
+BGD.max <- FreeListTable(BGDsub, CODE = "BGD", Order = "Order", 
+                         Salience = "BGD.S", Subj = "CERCID", 
+                         tableType = "FREQUENCY")
+
+BGD.max$trials <- rowSums(BGD.max[,2:length(BGD.max)])
+
+# move IDs from rownames to CERCID column
+BGD.max$CERCID <- rownames(BGD.max)
+
+# select and extract CERCID and MAX Salience for Morality
+BGDmergelabs <- c("CERCID", "Morality", "trials")
+BGDmerge1 <- BGD.max[BGDmergelabs]
+
+# extract CERCID, Culture/SITE and overall scale response (MGMEAN) from cerc
+BGDcerclabs <- c("CERCID", "SITE", "MGMEAN")
+BGDcerc <- cerc[BGDcerclabs]
+
+# merge with free-list data
+BGDmerge <- merge(BGDmerge1, BGDcerc, by.x = "CERCID")
+
+# only complete cases in final dataset
+BGDmerge <- BGDmerge[complete.cases(BGDmerge), ]
+
+# change and shorten data frame and variable names
+bgd_gen_data_bin <- BGDmerge
+cols <- c("id", "y", "n", "culture", "scale")
+colnames(bgd_gen_data_bin) <- cols
+str(bgd_gen_data_bin)
+
+```
+
+```{r bin-model, echo=TRUE}
+m1_bin <- brm(bf(
+  y | trials(n) ~ 1 + scale),
+  data = bgd_gen_data_bin,
+  family = binomial(),
+  cores = 4, chains = 4, 
+  iter = 1000, control = list(adapt_delta = 0.99),
+  seed = 2021)
+```
+
+We can check the fit of the model with a convenient posterior predictive check of the marginal distribution of outcome values plotted against model predictions across total number of items listed (Figure \ref{fig:ppc-bin}). The fit is decent but not perfect; the model seems to consistently over-shoot the number of ones and twos, for instance. In an applied case, we would likely work on achieving a closer fit or, failing to do so, abandon this particular likelihood model.
+
+```{r ppc-bin, echo=FALSE, fig.width=5, fig.height=3.5, fig.cap="Posterior predictive check for the binomial model.  Light blue bars are frequency of each observed outcome while points and intervals are posterior predictions. Panel numbers refer to number of 'trials' *n*, i.e. total number of items listed per participant."}
+theme_set(theme_classic())
+
+yrep <- posterior_predict(m1_bin)
+
+ppc_bars_grouped(y = m1_bin$data[["y"]],
+                 group = m1_bin$data[["n"]],
+                 yrep = yrep) + theme(legend.position = "none")
+```
+
+We can then plot the expected number of times that 'Morality' was listed as a function of the moral interest scale and the total number of items listed per participant (Figure \ref{fig:bin-model-plot}). For instance, the model predicts that a participant that lists only one item (panel 1) lists 'Morality' as that one item regardless of their score on the moral interest scale. Generally, the moral interest scale does not appear to predict an increased probability of listing more 'Morality' items across various number of trials. A possible exception is for those who lists five items (panel 5), where the model's best guesses trend upwards from two 'Morality' items at the lowest end of the scale to three 'Morality' items at the higher end of the scale.
+
+```{r bin-model-plot, echo=FALSE, fig.width=5, fig.height=3.5, fig.cap="Binomial model. Lines are posterior medians of expected values with 95% interval bands. Raw data points are slightly jittered vertically. Panel numbers refer to number of 'trials' *n*, i.e. total number of items listed per participant."}
+theme_set(theme_classic())
+
+m1_bin_ce <- conditional_effects(m1_bin, method = "posterior_epred",
+                                conditions = data.frame(n = unique(bgd_gen_data_bin$n))) # conditions refer here to number of trials, n
+
+m1_bin_fit <- m1_bin_ce[[1]] %>%
+  group_by(cond__, scale) %>%
+  summarize(
+    est = median(estimate__),
+    lower = median(lower__),
+    upper = median(upper__)) %>%
+  rename(n = cond__)
+
+ggplot() +
+  geom_jitter(data=m1_bin$data, aes(x = scale, y = y), height = 0.1, width = 0, alpha = 0.1) + 
+  geom_line(data=m1_bin_fit, aes(x=scale, y=est), color = "blue", size = 0.5, alpha = 0.8) +
+  geom_ribbon(data=m1_bin_fit, aes(x=scale, ymin=lower, ymax=upper), alpha = 0.25) +
+  ylab("Number of Morality listings") + 
+  scale_x_continuous(limits=c(-0.05,1.05), breaks=c(0,0.5,1), name = "Moral Interest Scale") +
+  facet_wrap(~ n)
+
+```
+
+\newpage
+
+## Average list position {-}
+
+\noindent We can also model the expected list position and how this expectation change as a function of some predictor(s), using a zero-inflated negative binomial. Using `tableType = 'HIGHEST_RANK'` in `AnthroTools::FreeListTable()`, we get the highest rank (i.e., list position) for all items listed across participants. As above, we extract the general 'Morality' code, combine this data with the scale responses, and store it in the object `bgd_gen_data_rank`. Now, `y` is the order at which 'Morality' was listed, i.e. 1 means first, 2 means second, etc., while 0 means that 'Morality' was not listed. 
+
+```{r rank-prep, include=FALSE}
+### prepare free-list data for rank models
+
+# calculate salience
+BGD.max <- FreeListTable(BGDsub, CODE = "BGD", Order = "Order", 
+                         Salience = "BGD.S", Subj = "CERCID", 
+                         tableType = "HIGHEST_RANK")
+
+# move IDs from rownames to CERCID column
+BGD.max$CERCID <- rownames(BGD.max)
+
+# select and extract CERCID and MAX Salience for Morality
+BGDmergelabs <- c("CERCID", "Morality")
+BGDmerge1 <- BGD.max[BGDmergelabs]
+
+# extract CERCID, Culture/SITE and overall scale response (MGMEAN) from cerc
+BGDcerclabs <- c("CERCID", "SITE", "MGMEAN")
+BGDcerc <- cerc[BGDcerclabs]
+
+# merge with free-list data
+BGDmerge <- merge(BGDmerge1, BGDcerc, by.x = "CERCID")
+
+# only complete cases in final dataset
+BGDmerge <- BGDmerge[complete.cases(BGDmerge), ]
+
+# set column names
+BGDmerge <- setNames(BGDmerge, c("CERCID","BGD.max.S", "Culture", "MGMEAN"))
+
+# change and shorten data frame and variable names
+bgd_gen_data_rank <- BGDmerge
+cols <- c("id", "y", "culture", "scale")
+colnames(bgd_gen_data_rank) <- cols
+```
+
+```{r str-rank, echo=TRUE}
+str(bgd_gen_data_rank)
+```
+
+We then fit a zero-inflated negative binomial model to this data, using scale as a predictor for both the zero-inflation `zi ~ ...` and the negative binomial `y ~ ...`. The implementation is straightforward as this likelihood model is native to `brms`, specified as `family = zero_inflated_negbinomial()`. Note that a larger regression coefficient in the negative binomial part means that the target item moves *down* on participants free-lists (i.e., becomes less salient) as a function of the predictor. 
+
+```{r zinb-model, echo=TRUE}
+m1_zinb <- brm(bf(
+  y ~ 1 + scale,
+  zi ~ 1 + scale),
+  data = bgd_gen_data_rank,
+  family = zero_inflated_negbinomial(),
+  cores = 4, chains = 4, 
+  iter = 1000, control = list(adapt_delta = 0.99),
+  seed = 2021)
+```
+
+We can again assess the fit of model with a quick posterior predictive check (Figure \ref{fig:ppc-zinb}). The fit looks far from perfect, as the model fails to capture key aspects of the observed marginal outcome. In an applied case, we would have to look further into this mis-fit, perhaps resulting in the inference that the zero-inflated negative binomial is, after all, not a good model for these particular data. One possible reason for this is that the negative binomial is an uncapped count model, and so it is not prevented from returning predictions that are substantially outside the range of observed values, which in this case means predicting a target item appearing in much later list positions than observed. 
+
+For illustrative purposes, however, let's assess the expected list position of 'Morality' as predicted by the moral interest scale (Figure \ref{fig:scatplot-zinb}). There is not a lot of change, although if anything it seems that the expected position at which 'Morality' is listed trends upwards (e.g., becomes less salient) with higher scores on the moral interest scale.
+
+```{r ppc-zinb, echo=FALSE, fig.width=5, fig.height=3, fig.cap="Posterior predictive check for zero-inflated negative binomial. Light blue bars are frequency of each observed outcome while points and intervals are posterior predictions."}
+yrep <- posterior_predict(m1_zinb)
+
+ppc_bars(y = m1_zinb$data[["y"]],
+         yrep = yrep) + theme(legend.position = "none")
+```
+
+```{r scatplot-zinb, echo=FALSE, fig.width=5, fig.height=3, fig.cap="Expected list position according to the zero-inflated negative binomial model. Raw data points are slightly jittered vertically."}
+theme_set(theme_classic())
+
+m1_zinb_ce <- conditional_effects(m1_zinb, method = "posterior_epred")
+
+plot(m1_zinb_ce, ask = FALSE, plot = FALSE, points = TRUE, point_args = list(height = 0.25, alpha = 0.1, shape = 16))[[1]] + 
+  ylab("List position") + xlab("Moral Interest Scale")
+
+```
+
+\newpage
+
+## Cumulative probability of list positions {-}
+
+\noindent Finally, we could model the cumulative probabilities of a target item appearing in each of the positions in which the item appears across the sample using zero-inflated ordinal regression. This likelihood model is not native to `brms`, and hence requires some custom code (stored in `stanvars` in the model code chunk). See the source code, which adopts and modifies code after \url{https://github.com/octmedina/zi-ordinal}. We also set some weakly regularizing priors. 
+
+The `y ~ 1 + scale` part models the zero-inflation (i.e., the probability of not listing the target item), while `eta ~ 0 + scale` is the ordinal regression of the non-zero outcomes. Note that as with the zero-inflated negative binomial, a larger regression coefficient in the ordinal part means that the target item moves down on participants' free-lists (i.e., becomes less salient) as a function of the predictor. We again use the data frame `bgd_gen_data_rank`
+
+```{r, include=FALSE}
+# Code is adopted and modified after: 
+# https://github.com/octmedina/zi-ordinal/blob/main/brms_functions.R
+# see also: https://octavio.me/posts/2021-11-21-dealing-with-dont-knows/
+
+# create custom family for zero inflated ordinal
+# define two parameters (mu and eta), one for the zero inflation (mu)
+# and one for the regular ordinal part (eta)
+# also have to define the (threshold) intercept variable (c_int) 
+zi_ordinal <- custom_family(
+  "zi_ordinal", dpars = c("mu", "eta"),
+  links = c("identity"), lb = c(NA, NA),
+  type = c("int"), vars = c("c_int")
+)
+
+# define stan functions
+# we define the lpmf and the random number generator
+stan_funs <- stanvar(block = "functions", scode = "
+  real zi_ordinal_lpmf(int k, real mu, real eta, vector c_int) {
+      if (k == 0) // assume non-response coded as 0
+        return bernoulli_logit_lpmf(1| mu); // predict non-response with probability p
+      else // otherwise use ordered logistic with prob 1-p
+        return bernoulli_logit_lpmf(0| mu) + ordered_logistic_lpmf(k | eta, c_int);
+  }
+  int zi_ordinal_rng(real mu, real eta, vector c_int) {
+    if (bernoulli_rng(inv_logit(mu)) == 1)
+      return 0;
+    else
+      return ordered_logistic_rng(eta, c_int);
+  }
+")
+
+# this feels sort of hacky, but to define the ordered c_int variable i had to
+# add this to the parameters block, as well as the number of categories (n_thresh)
+model_dat <- bgd_gen_data_rank
+ordered_var <- stanvar(scode = "ordered[n_thresh] c_int;", block = "parameters")
+ncat_var <- stanvar(x = max(model_dat$y), name = "n_thresh", scode = "int n_thresh;")
+stanvars <- ordered_var + ncat_var + stan_funs
+
+# Create posterior predict function for post-processing
+posterior_predict_zi_ordinal <- function(i, prep, ...) {
+  c_all <- rstan::extract(model_fit$fit, pars = "c_int") # extract intercepts
+  c_int <- as.matrix(c_all$c_int[,1:max(model_fit$data[["y"]])]) # convert to matrix
+  
+  mu <- brms::get_dpar(prep, "mu", i = i) # get mu (zero/non-response inflation)
+  eta <- brms::get_dpar(prep, "eta", i = i) # get eta (regular ordinal logistic)
+  
+  p_zi <- plogis(mu) # inverse-logit 
+  thresholds <- ncol(c_int) # get number of thresholds
+  
+  # create the probabilities for all the categories
+  p_total <- cbind(p_zi, (1-p_zi)*(1-plogis(eta-c_int[,1])))
+  for (val in 2:thresholds) {
+    p_total <- cbind(p_total, (1-p_zi)*(plogis(eta-c_int[,val-1])-plogis(eta-c_int[,val])))
+  }
+  p_total <- cbind(p_total, (1-p_zi)*(plogis(eta-c_int[,thresholds])))
+  
+  # generate samples (subtract 1 bc first category is 0)
+  y_rep <- extraDistr::rcat(n=dim(p_total)[1], prob = p_total)-1
+  y_rep <- as.matrix(y_rep)
+  y_rep
+}
+
+```
+
+```{r zi-ord-model, echo=TRUE}
+ziord_priors <- set_prior("normal(0,1)", class = "b", dpar = "eta") + 
+                set_prior("normal(0,1)", class = "b") + 
+                set_prior("normal(0,2)", class = "Intercept")
+
+m1_zi_ord <- brm(bf(
+      y ~ 1 + scale,
+      eta ~ 0 + scale),
+  data = bgd_gen_data_rank,
+  prior = ziord_priors,
+  family = zi_ordinal, stanvars = stanvars,
+  chains = 4, cores = 4, control = list(adapt_delta = 0.99),
+  seed = 2021, iter = 10000)
+```
+
+```{r zi-ord-stan-model, include=FALSE}
+### Since we have convergence issue with the brms custom model, we here show an implementation of the same model fitted directly in Stan,
+### which samples much more efficiently.
+
+bgd_gen_data_rank_list <- as.list(bgd_gen_data_rank) # convert data frame to list
+bgd_gen_data_rank_list$K <- as.integer(max(bgd_gen_data_rank_list$y)) # add number of response categories (i.e., list positions) to data list
+bgd_gen_data_rank_list$N <- as.integer(length(bgd_gen_data_rank_list$y)) # add number of observations to data list
+                 
+# define Stan model                
+m_ziord_stan <- "
+data{
+    int<lower=0> N; // number of observations
+    int<lower=2> K; // number of categories
+    int<lower=0,upper=K> y[N]; // response variable
+    real scale[N];
+}
+parameters{
+    real a_zi;
+    real bScale_zi;
+    real bScale_eta;
+    ordered[K-1] c; // number of thresholds for ordered logistic
+}
+model{
+    vector[N] eta;
+    vector[N] zi;
+    c ~ normal( 0 , 1.5 );
+    a_zi ~ normal( 0 , 2 );
+    bScale_eta ~ normal( 0 , 1 );
+    bScale_zi ~ normal( 0 , 1 );
+
+    
+    for ( i in 1:N ) {
+        zi[i] = a_zi + bScale_zi * scale[i];
+    }
+    
+    for ( i in 1:N ) {
+        eta[i] = bScale_eta * scale[i];
+    }    
+
+    for ( i in 1:N ) {
+        if ( y[i] == 0 ) 
+        target += bernoulli_logit_lpmf(1 | zi[i]);
+        else 
+        target += bernoulli_logit_lpmf(0 | zi[i]) + ordered_logistic_lpmf(y[i]| eta[i], c);
+    }
+}
+generated quantities{ 
+    vector[N] log_lik; // generate log likelihood for model comparison
+    vector[N] yrep; // generate posterior samples for ppc
+    vector[N] eta;
+    vector[N] zi;
+    for ( i in 1:N ) {
+        zi[i] = a_zi + bScale_zi * scale[i];
+    }
+    for ( i in 1:N ) {
+        eta[i] = bScale_eta * scale[i];
+    }
+    for ( i in 1:N ) {
+        if ( y[i] == 0 ) 
+        log_lik[i] = bernoulli_logit_lpmf(1 | zi[i]);
+        else
+        log_lik[i] = bernoulli_logit_lpmf(0 | zi[i]) + ordered_logistic_lpmf(y[i]| eta[i], c);
+    }    
+    for (i in 1:N) {
+        if (bernoulli_rng(inv_logit(zi[i])) == 1)
+        yrep[i] = 0;
+        else
+        yrep[i] = ordered_logistic_rng(eta[i], c);
+    }
+}
+"
+
+# fit Stan model
+m_ziord_stanfit <- stan( 
+  model_code = m_ziord_stan, 
+  data = bgd_gen_data_rank_list,
+  chains = 4, iter = 1000, cores = 4)
+
+summary(m_ziord_stanfit)
+
+# posterior predictive check
+stan_yrep <- extract(m_ziord_stanfit)$yrep
+
+ppc_bars(y = bgd_gen_data_rank_list$y,
+         yrep = stan_yrep)
+
+```
+
+With this data and model, we experienced convergence issues, which would have to be fixed in an actual applied case. We get reasonable convergence diagnostics with a relatively high number of iterations (10,000); however, increasing computational costs is not the ideal strategy for alleviating problematic chain behavior. In the source code, we illustrate an implementation in raw `Stan` that samples much more efficiently.
+
+We can run a posterior predictive check to assess the fit of the model against observed data (Figure \ref{fig:ppc-zi-ord}). The fit looks very reasonable, in that the observed data are well inside the intervals of the posterior predictions. Lastly, we can plot the cumulative probabilities of each list position as predicted by the moral interest scale. That is, how does the probability of listing 'Morality' change as a function of higher or lower scores on the three-item scale? This is Figure \ref{fig:cumulative-zi-ord}; lines are medians of posterior predictive draws and bands are 80% intervals to make the trends stand out more clearly. Note that the probability of not listing the target item (0; red line/band) goes down as participants score higher on the scale, whereas the probability of listing 'Morality' as the first item (1; yellow line/band) seems stable across scale responses. Conversely, the probability of 'Morality' appearing at list position two (green) and three (turqoise) seem to increase slightly with higher scores on the scale. The probability of listing ''Morality' as the fourth (blue) and fifth (purple) item is practically zero across the span of the scale.
+
+```{r ppc-zi-ord, echo=FALSE, fig.width=5, fig.height=3, fig.cap="Posterior predictive check for zero-inflated ordinal regression. Light blue bars are frequency of each observed outcome while points and intervals are posterior predictions."}
+model_fit <- m1_zi_ord
+
+yrep <- posterior_predict(m1_zi_ord)
+
+ppc_bars(y = model_fit$data[["y"]],
+         yrep = yrep) + theme(legend.position = "none")
+```
+
+```{r cumulative-zi-ord-prep, include=FALSE}
+return_prob <- function(mu, eta, c) {
+  c <- c[[1]]
+  p_zi <- plogis(mu) # inverse-logit 
+  n_thresh <- length(c) # get number of thresholds
+  
+  # create the probabilities for all the categories
+  p_total <- cbind(p_zi, (1-p_zi)*(1-plogis(eta-c[1])))
+  
+  for (i in 2:n_thresh) {
+    p_total <- cbind(p_total, (1-p_zi)*(plogis(eta-c[i-1])-plogis(eta-c[i])))
+  }
+  
+  p_total <- cbind(p_total, (1-p_zi)*(plogis(eta-c[n_thresh])))
+  
+  p_total
+}
+
+get_variables(m1_zi_ord)
+
+fit_all <- m1_zi_ord %>% spread_draws(b_Intercept, b_scale, b_eta_scale)
+
+fit_c <- m1_zi_ord %>% spread_draws(c_int[i]) %>%
+  group_by(.chain, .iteration, .draw) %>%
+  summarize(c = list(c_int))
+
+t <- fit_all %>%
+  mutate(mu_0 = b_Intercept,
+         eta_0 = 0,
+         mu_0.25 = b_Intercept + b_scale*0.25,
+         eta_0.25 = b_eta_scale*0.25,
+         mu_0.5 = b_Intercept + b_scale*0.5,
+         eta_0.5 = b_eta_scale*0.5,
+         mu_0.75 = b_Intercept + b_scale*0.75,
+         eta_0.75 = b_eta_scale*0.75,
+         mu_1 = b_Intercept + b_scale,
+         eta_1 = b_eta_scale)
+
+prob_0 <- return_prob(t$mu_0, t$eta_0, fit_c$c) %>%
+  as.data.frame() %>%
+  mutate(scale = 0)
+
+prob_0.25 <- return_prob(t$mu_0.25, t$eta_0.25, fit_c$c) %>%
+  as.data.frame() %>% 
+  mutate(scale = 0.25)
+
+prob_0.5 <- return_prob(t$mu_0.5, t$eta_0.5, fit_c$c) %>%
+  as.data.frame() %>% 
+  mutate(scale = 0.5)
+
+prob_0.75 <- return_prob(t$mu_0.75, t$eta_0.75, fit_c$c) %>%
+  as.data.frame() %>% 
+  mutate(scale = 0.75)
+
+prob_1 <- return_prob(t$mu_1, t$eta_1, fit_c$c) %>%
+  as.data.frame() %>% 
+  mutate(scale = 1)
+
+joint <- bind_rows(prob_0, prob_0.25, prob_0.5, prob_0.75, prob_1)
+
+names(joint)[1:6] <- c(0,1,2,3,4,5)
+
+joint_summary <- joint %>% group_by(factor(scale))
+
+joint_summary_l <- joint %>% pivot_longer(1:6, names_to = "Position")
+
+```
+
+```{r cumulative-zi-ord, echo=FALSE,, fig.width=5, fig.height=3, fig.cap="Cumulative probabilities of each list position. 0 = item not listed. Lines are posterior medians and bands are 80% credible intervals."}
+joint_plot <- 
+  ggplot(joint_summary_l, 
+         aes(x = scale, y = value, color = Position, fill = Position)) +
+  stat_lineribbon(point_interval = median_qi, .width = 0.8, alpha = 0.5) +
+  theme_classic() + 
+  ylab("Probability") + xlab("Moral Interest Scale")
+
+joint_plot
+
+```
+
+\newpage
+
+# Appendix C: Supplementary plots and tables {-}
+
+```{r scat-plots-bgd-supps, echo = FALSE, fig.height=10, fig.width=8, fig.cap = "Posterior predictions for each field site from Model 3 through 5 on the relationship between the moral interest scale items (*x*-axis) and salience of the corresponding free-listed code (*y*-axis). Lines are draws of expected values from the posterior predictive distributions. Raw data points are slightly jittered."}
+
+set.seed(2021)
+bgd_stl_fig <- spec_epred_plot(bgd_stl_data, m3) + 
+  ggtitle('MORALISTIC GODS: Stealing')
+set.seed(NULL)
+
+set.seed(2021)
+bgd_murd_fig <- spec_epred_plot(bgd_murd_data, m4) + 
+  ggtitle('MORALISTIC GODS: Murder')
+set.seed(NULL)
+
+set.seed(2021)
+bgd_lie_fig <- spec_epred_plot(bgd_lie_data, m5) + 
+  ggtitle('MORALISTIC GODS: Lying')
+set.seed(NULL)
+
+(bgd_stl_fig) + (bgd_murd_fig) + (bgd_lie_fig) +
+  patchwork ::plot_layout(ncol = 1, nrow = 3)
+
+```
+
+```{r scat-plots-lgd-supps, echo=FALSE, fig.height=10, fig.width=8, fig.cap = "Posterior predictions for each field site from Model 6 through 8 on the relationship between the moral interest scale items (*x*-axis) and salience of the corresponding free-listed code (*y*-axis). Lines are draws of expected values from the posterior predictive distributions. Raw data points are slightly jittered."}
+# insert dummy row for Lovu with impossible values in LGD data frames. This will throw an error when plotting.
+lgd_stl_data <- rbind(lgd_stl_data, data.frame(id = NA, y = NA, culture = "Lovu", scale = NA))
+lgd_murd_data <- rbind(lgd_murd_data, data.frame(id = NA, y = NA, culture = "Lovu", scale = NA))
+lgd_lie_data <- rbind(lgd_lie_data, data.frame(id = NA, y = NA, culture = "Lovu", scale = NA))
+
+set.seed(2021)
+lgd_stl_fig <- spec_epred_plot(lgd_stl_data, m6) + 
+  ggtitle('LOCAL GODS: Stealing')
+set.seed(NULL)
+
+set.seed(2021)
+lgd_murd_fig <- spec_epred_plot(lgd_murd_data, m7) + 
+  ggtitle('LOCAL GODS: Murder')
+set.seed(NULL)
+
+set.seed(2021)
+lgd_lie_fig <- spec_epred_plot(lgd_lie_data, m8) + 
+  ggtitle('LOCAL GODS: Lying')
+set.seed(NULL)
+
+(lgd_stl_fig) + (lgd_murd_fig) + (lgd_lie_fig) +
+  patchwork ::plot_layout(ncol = 1, nrow = 3)
+
+```
+
+```{r reduced-models, include=FALSE}
+### Retain only non-zero free-list responses
+bgd_gen_data_r <- bgd_gen_data[bgd_gen_data$y > 0,]
+lgd_gen_data_r <- lgd_gen_data[lgd_gen_data$y > 0,]
+
+bgd_stl_data_r <- bgd_stl_data[bgd_stl_data$y > 0,]
+bgd_murd_data_r <- bgd_murd_data[bgd_murd_data$y > 0,]
+bgd_lie_data_r <- bgd_lie_data[bgd_lie_data$y > 0,]
+
+lgd_stl_data_r <- lgd_stl_data[lgd_stl_data$y > 0,]
+lgd_murd_data_r <- lgd_murd_data[lgd_murd_data$y > 0,]
+lgd_lie_data_r <- lgd_lie_data[lgd_lie_data$y > 0,]
+```
+
+```{r reduced-model1, include=FALSE}
+m1_r <- stats::update(m1, newdata = bgd_gen_data_r)
+```
+```{r reduced-model2, include=FALSE}
+m2_r <- stats::update(m2, newdata = lgd_gen_data_r)
+```
+```{r reduced-model3, include=FALSE}
+m3_r <- stats::update(m3, newdata = bgd_stl_data_r)
+```
+```{r reduced-model4, include=FALSE}
+m4_r <- stats::update(m4, newdata = bgd_murd_data_r)
+```
+```{r reduced-model5, include=FALSE}
+m5_r <- stats::update(m5, newdata = bgd_lie_data_r)
+```
+```{r reduced-model6, include=FALSE}
+m6_r <- stats::update(m6, newdata = lgd_stl_data_r)
+```
+```{r reduced-model7, include=FALSE}
+# models 7 and 8 need new Dirichlet priors
+m7_r <- brm(formula = bf(
+  y ~ mo(scale) + (mo(scale)|culture),
+  phi ~ mo(scale) + (mo(scale)|culture),
+  zoi ~ mo(scale) + (mo(scale)|culture),
+  coi ~ mo(scale) + (mo(scale)|culture)),
+  prior = c(set_prior("normal(0,0.125)", class = "b") +
+    set_prior("normal(0,1)", class = "Intercept") + 
+    set_prior("exponential(1)", class = "sd") +
+    set_prior("normal(0,0.125)", class = "b", dpar = "coi") +
+    set_prior("normal(0,1)", class = "Intercept", dpar = "coi") + 
+    set_prior("exponential(1)", class = "sd", dpar = "coi") +
+    set_prior("normal(-1, 1)", class = "b", dpar = "phi") +
+    set_prior("normal(2, .5)", class = "Intercept", dpar = "phi") + 
+    set_prior("exponential(1)", class = "sd", dpar = "phi") +
+    set_prior("normal(0,0.125)", class = "b", dpar = "zoi") +
+    set_prior("normal(0,1)", class = "Intercept", dpar = "zoi") + 
+    set_prior("exponential(1)", class = "sd", dpar = "zoi") +
+    set_prior("lkj_corr_cholesky(4)", class = "cor") +
+    set_prior("dirichlet(2,2,2)", class="simo", dpar=c("","coi","phi","zoi"), coef="moscale1")),
+  data = lgd_murd_data_r,
+  family = zero_one_inflated_beta(),
+  cores = 4, chains = 4, iter = 6000, control = list(adapt_delta = 0.99),
+  seed = 2021, save_pars = save_pars(all = TRUE))
+```
+```{r reduced-model8, include=FALSE}
+m8_r <- brm(formula = bf(
+  y ~ mo(scale) + (mo(scale)|culture),
+  phi ~ mo(scale) + (mo(scale)|culture),
+  zoi ~ mo(scale) + (mo(scale)|culture),
+  coi ~ mo(scale) + (mo(scale)|culture)),
+  prior = c(set_prior("normal(0,0.125)", class = "b") +
+              set_prior("normal(0,1)", class = "Intercept") + 
+              set_prior("exponential(1)", class = "sd") +
+              set_prior("normal(0,0.125)", class = "b", dpar = "coi") +
+              set_prior("normal(0,1)", class = "Intercept", dpar = "coi") + 
+              set_prior("exponential(1)", class = "sd", dpar = "coi") +
+              set_prior("normal(-1, 1)", class = "b", dpar = "phi") +
+              set_prior("normal(2, .5)", class = "Intercept", dpar = "phi") + 
+              set_prior("exponential(1)", class = "sd", dpar = "phi") +
+              set_prior("normal(0,0.125)", class = "b", dpar = "zoi") +
+              set_prior("normal(0,1)", class = "Intercept", dpar = "zoi") + 
+              set_prior("exponential(1)", class = "sd", dpar = "zoi") +
+              set_prior("lkj_corr_cholesky(4)", class = "cor") +
+              set_prior("dirichlet(2,2)", class="simo", dpar=c("","coi","phi","zoi"), coef="moscale1")),
+  data = lgd_lie_data_r,
+  family = zero_one_inflated_beta(),
+  cores = 4, chains = 4, iter = 6000, control = list(adapt_delta = 0.99),
+  seed = 2021, save_pars = save_pars(all = TRUE))
+```
+
+```{r scat-plots-gen-reduced, echo=FALSE, fig.height=8, fig.width=8, fig.cap = "\\textbf{Reduced models}. Posterior predictions for each field site from Model 1 and 2 on the relationship between the moral interest scale (*x*-axis) and salience of free-listed Morality (*y*-axis) with only non-zero free-list responses. Lines are draws of expected values from the posterior predictive distributions. Raw data points are slightly jittered."}
+# plotting the reduced MG gen. model, using the plotting function from the main manuscript
+set.seed(2021)
+bgd_fig_r <- gen_epred_plot(bgd_gen_data_r, m1_r) + 
+  ggtitle('MORALISTIC GODS')
+set.seed(NULL)
+
+# plotting the reduced LG gen. model requires a few modifications to the plotting code
+set.seed(2021) 
+lgd_fig_r <- lgd_gen_data %>%
+    group_by(culture) %>%
+    data_grid(scale = seq_range(0:1, n = 10)) %>%
+    add_epred_draws(m2_r, ndraws = 100, re_formula = NULL, dpar = TRUE, 
+                    allow_new_levels = TRUE, sample_new_levels = "uncertainty") %>% # see ?prepare_predictions for details
+    ggplot(aes(x = scale, y = y)) +
+    geom_line(aes(y = .epred,
+                  group = paste(culture, .draw)), alpha = 1/10, color = "#08519C") +
+    geom_jitter(data = na.omit(lgd_gen_data_r), size = 3, width = 0.01, shape = 1, color = "black") +
+    facet_wrap(~na.omit(culture), nrow = 2, drop = FALSE) + 
+    scale_fill_brewer() +
+    theme_bw() +
+    theme(strip.background = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank(),
+          strip.text.x = element_text(
+              size = 10, face = "bold"),
+          legend.position = "none") + 
+    scale_y_continuous(limits=c(-0.05,1.05), breaks=c(0,0.5,1), name = "Free-Listed Morality (Salience)") + 
+    scale_x_continuous(limits=c(-0.05,1.05), breaks=c(0,0.5,1), name = "Moral Interest Scale") + 
+    ggtitle('LOCAL GODS')
+set.seed(NULL)
+
+bgd_fig_r + lgd_fig_r +
+  patchwork ::plot_layout(ncol = 1, nrow = 2)
+
+```
+
+```{r scat-plots-bgd-reduced, echo=FALSE, fig.height=10, fig.width=8, fig.cap = "\\textbf{Reduced models}. Posterior predictions for each field site from Model 3 through 5 on the relationship between the moral interest scale (*x*-axis) and salience of the corresponding free-listed code (*y*-axis) with only non-zero free-list responses. Lines are draws of expected values from the posterior predictive distributions. Raw data points are slightly jittered."}
+set.seed(2021)
+bgd_stl_fig_r <- spec_epred_plot(bgd_stl_data_r, m3_r) + 
+  ggtitle('MORALISTIC GODS: Stealing')
+set.seed(NULL)
+
+set.seed(2021)
+bgd_murd_fig_r <- spec_epred_plot(bgd_murd_data_r, m4_r) + 
+  ggtitle('MORALISTIC GODS: Murder')
+set.seed(NULL)
+
+set.seed(2021)
+bgd_lie_fig_r <- spec_epred_plot(bgd_lie_data_r, m5_r) + 
+  ggtitle('MORALISTIC GODS: Lying')
+set.seed(NULL)
+
+bgd_stl_fig_r + bgd_murd_fig_r + bgd_lie_fig_r +
+  patchwork ::plot_layout(ncol = 1, nrow = 3)
+
+```
+
+
+```{r scat-plots-lgd-reduced, echo=FALSE, fig.height=10, fig.width=8, fig.cap = "\\textbf{Reduced models}. Posterior predictions for each field site from Model 6 through 8 on the relationship between the moral interest scale (*x*-axis) and salience of the corresponding free-listed code (*y*-axis) with only non-zero free-list responses. Lines are draws of expected values from the posterior predictive distributions. Raw data points are slightly jittered."}
+### New plotting function for LG reduced models
+spec_epred_plot_r <- function(dat, dat2, model, range){
+  data <- dat
+  data$scale <- as.integer(data$scale)-1 # reverting the variable back to the original scale after having fitted as ordered factors
+  dat2 %>%
+    group_by(culture) %>%
+    data_grid(scale = range) %>%
+    add_epred_draws(model, ndraws = 100, re_formula = NULL, dpar = TRUE, 
+                    allow_new_levels = TRUE, sample_new_levels = "uncertainty") %>% # see ?prepare_predictions for details
+    ggplot(aes(x = scale, y = y)) +
+    geom_line(aes(y = .epred,
+                  group = paste(culture, .draw)), alpha = 1/10, color = "#08519C") +
+    geom_jitter(data = na.omit(data), size = 3, width = 0.01, shape = 1, color = "black") +
+    facet_wrap(~na.omit(culture), nrow = 2, drop = FALSE) + 
+    scale_fill_brewer() +
+    theme_bw() +
+    theme(strip.background = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank(),
+          strip.text.x = element_text(
+              size = 10, face = "bold"),
+          legend.position = "none") + 
+    scale_y_continuous(limits=c(-0.05,1.05), breaks=c(0,0.5,1), name = "Free-listed moral item (Salience)") + 
+    scale_x_continuous(limits=c(-0.05,4.05), name = "Moral Interest Scale item")
+}
+
+### Plot LG reduced models
+
+set.seed(2021)
+lgd_stl_fig_r <- spec_epred_plot_r(lgd_stl_data_r, lgd_stl_data, m6_r, range = seq_range(0:4, n = 5)) + 
+  ggtitle('LOCAL GODS: Stealing')
+set.seed(NULL)
+
+set.seed(2021)
+lgd_murd_fig_r <- spec_epred_plot_r(lgd_murd_data_r, lgd_murd_data, m7_r, range = c(0,1,3,4)) + 
+  ggtitle('LOCAL GODS: Stealing')
+set.seed(NULL)
+
+set.seed(2021)
+lgd_lie_fig_r <- spec_epred_plot_r(lgd_lie_data_r,lgd_lie_data, m8_r, range = c(0,3,4)) + 
+  ggtitle('LOCAL GODS: Lying')
+set.seed(NULL)
+
+lgd_stl_fig_r + lgd_murd_fig_r + lgd_lie_fig_r +
+  patchwork ::plot_layout(ncol = 1, nrow = 3)
+
+```
+
+```{r model1-logo, include=FALSE}
+# Model 1
+plan(multisession) # for parallelization
+
+loo_m1_logo <- brms::kfold(m1, group = "culture")
+loo_m1_null_logo <- brms::kfold(m1_null, group = "culture")
+loo_compare(loo_m1_logo, loo_m1_null_logo)
+```
+```{r model2-logo, include=FALSE}
+# Model 2
+plan(multisession) # for parallelization
+
+loo_m2_logo <- brms::kfold(m2, group = "culture")
+loo_m2_null_logo <- brms::kfold(m2_null, group = "culture")
+loo_compare(loo_m2_logo, loo_m2_null_logo)
+```
+```{r model3-logo, include=FALSE}
+# Model 3
+plan(multisession) # for parallelization
+
+loo_m3_logo <- brms::kfold(m3, group = "culture")
+loo_m3_null_logo <- brms::kfold(m3_null, group = "culture")
+loo_compare(loo_m3_logo, loo_m3_null_logo)
+```
+
+```{r model4-logo, include=FALSE}
+# Model 4
+plan(multisession) # for parallelization
+
+loo_m4_logo <- brms::kfold(m4, group = "culture")
+loo_m4_null_logo <- brms::kfold(m4_null, group = "culture")
+loo_compare(loo_m4_logo, loo_m4_null_logo)
+```
+
+```{r model5-logo, include=FALSE}
+# Model 5
+plan(multisession) # for parallelization
+
+loo_m5_logo <- brms::kfold(m5, group = "culture")
+loo_m5_null_logo <- brms::kfold(m5_null, group = "culture")
+loo_compare(loo_m5_logo, loo_m5_null_logo)
+```
+
+```{r model6-logo, include=FALSE}
+# Model 6
+plan(multisession) # for parallelization
+
+loo_m6_logo <- brms::kfold(m6, group = "culture")
+loo_m6_null_logo <- brms::kfold(m6_null, group = "culture")
+loo_compare(loo_m6_logo, loo_m6_null_logo)
+```
+
+```{r model7-logo, include=FALSE}
+# Model 7
+plan(multisession) # for parallelization
+
+loo_m7_logo <- brms::kfold(m7, group = "culture")
+loo_m7_null_logo <- brms::kfold(m7_null, group = "culture")
+loo_compare(loo_m7_logo, loo_m7_null_logo)
+```
+
+```{r model8-logo, include=FALSE}
+# Model 8
+plan(multisession) # for parallelization
+
+loo_m8_logo <- brms::kfold(m8, group = "culture")
+loo_m8_null_logo <- brms::kfold(m8_null, group = "culture")
+loo_compare(loo_m8_logo, loo_m8_null_logo)
+
+```
+
+```{r logo-tab, echo=FALSE, eval=TRUE}
+### Leave-one-group-out table for main models
+
+# ELPD differences and SE
+m1_logo_elpd <- as.data.frame(t(round(loo_compare(loo_m1_logo, loo_m1_null_logo), 2)))
+m2_logo_elpd <- as.data.frame(t(round(loo_compare(loo_m2_logo, loo_m2_null_logo), 2)))
+m3_logo_elpd <- as.data.frame(t(round(loo_compare(loo_m3_logo, loo_m3_null_logo), 2)))
+m4_logo_elpd <- as.data.frame(t(round(loo_compare(loo_m4_logo, loo_m4_null_logo), 2)))
+m5_logo_elpd <- as.data.frame(t(round(loo_compare(loo_m5_logo, loo_m5_null_logo), 2)))
+m6_logo_elpd <- as.data.frame(t(round(loo_compare(loo_m6_logo, loo_m6_null_logo), 2)))
+m7_logo_elpd <- as.data.frame(t(round(loo_compare(loo_m7_logo, loo_m7_null_logo), 2)))
+m8_logo_elpd <- as.data.frame(t(round(loo_compare(loo_m8_logo, loo_m8_null_logo), 2)))
+
+# model weights using stacking
+m1_point_logo <- cbind(loo_m1_logo$pointwise[,"elpd_kfold"],
+                  loo_m1_null_logo$pointwise[,"elpd_kfold"])
+m1_stack_logo <- as.list(loo::stacking_weights(m1_point_logo))
+
+m2_point_logo <- cbind(loo_m2_logo$pointwise[,"elpd_kfold"],
+                       loo_m2_null_logo$pointwise[,"elpd_kfold"])
+m2_stack_logo <- as.list(loo::stacking_weights(m2_point_logo))
+
+m3_point_logo <- cbind(loo_m3_logo$pointwise[,"elpd_kfold"],
+                       loo_m3_null_logo$pointwise[,"elpd_kfold"])
+m3_stack_logo <- as.list(loo::stacking_weights(m3_point_logo))
+
+m4_point_logo <- cbind(loo_m4_logo$pointwise[,"elpd_kfold"],
+                       loo_m4_null_logo$pointwise[,"elpd_kfold"])
+m4_stack_logo <- as.list(loo::stacking_weights(m4_point_logo))
+
+m5_point_logo <- cbind(loo_m5_logo$pointwise[,"elpd_kfold"],
+                       loo_m5_null_logo$pointwise[,"elpd_kfold"])
+m5_stack_logo <- as.list(loo::stacking_weights(m5_point_logo))
+
+m6_point_logo <- cbind(loo_m6_logo$pointwise[,"elpd_kfold"],
+                       loo_m6_null_logo$pointwise[,"elpd_kfold"])
+m6_stack_logo <- as.list(loo::stacking_weights(m6_point_logo))
+
+m7_point_logo <- cbind(loo_m7_logo$pointwise[,"elpd_kfold"],
+                       loo_m7_null_logo$pointwise[,"elpd_kfold"])
+m7_stack_logo <- as.list(loo::stacking_weights(m7_point_logo))
+
+m8_point_logo <- cbind(loo_m8_logo$pointwise[,"elpd_kfold"],
+                       loo_m8_null_logo$pointwise[,"elpd_kfold"])
+m8_stack_logo <- as.list(loo::stacking_weights(m8_point_logo))
+
+# extract relevant estimates and add to list
+logo_list <- list(
+                  Models = c("Akaike weights", "ELPD [SE]"),
+                  m1 = c(paste0(round_tidy(as.numeric(m1_stack_logo[[1]]),2)), paste0(m1_logo_elpd$m1[1]," [", m1_logo_elpd$m1[2],"]")),
+                  m1null = c(paste0(round_tidy(as.numeric(m1_stack_logo[[2]]),2)), paste0(m1_logo_elpd$m1_null[1]," [", m1_logo_elpd$m1_null[2],"]")),
+                  m2 = c(paste0(round_tidy(as.numeric(m2_stack_logo[[1]]),2)), paste0(m2_logo_elpd$m2[1]," [", m2_logo_elpd$m2[2],"]")),
+                  m2null = c(paste0(round_tidy(as.numeric(m2_stack_logo[[2]]),2)), paste0(m2_logo_elpd$m2_null[1]," [", m2_logo_elpd$m2_null[2],"]")),
+                  m3 = c(paste0(round_tidy(as.numeric(m3_stack_logo[[1]]),2)), paste0(m3_logo_elpd$m3[1]," [", m3_logo_elpd$m3[2],"]")),
+                  m3null = c(paste0(round_tidy(as.numeric(m3_stack_logo[[2]]),2)), paste0(m3_logo_elpd$m3_null[1]," [", m3_logo_elpd$m3_null[2],"]")),
+                  m4 = c(paste0(round_tidy(as.numeric(m4_stack_logo[[1]]),2)), paste0(m4_logo_elpd$m4[1]," [", m4_logo_elpd$m4[2],"]")),
+                  m4null = c(paste0(round_tidy(as.numeric(m4_stack_logo[[2]]),2)), paste0(m4_logo_elpd$m4_null[1]," [", m4_logo_elpd$m4_null[2],"]")),
+                  m5 = c(paste0(round_tidy(as.numeric(m5_stack_logo[[1]]),2)), paste0(m5_logo_elpd$m5[1]," [", m5_logo_elpd$m5[2],"]")),
+                  m5null = c(paste0(round_tidy(as.numeric(m5_stack_logo[[2]]),2)), paste0(m5_logo_elpd$m5_null[1]," [", m5_logo_elpd$m5_null[2],"]")),
+                  m6 = c(paste0(round_tidy(as.numeric(m6_stack_logo[[1]]),2)), paste0(m6_logo_elpd$m6[1]," [", m6_logo_elpd$m6[2],"]")),
+                  m6null = c(paste0(round_tidy(as.numeric(m6_stack_logo[[2]]),2)), paste0(m6_logo_elpd$m6_null[1]," [", m6_logo_elpd$m6_null[2],"]")),
+                  m7 = c(paste0(round_tidy(as.numeric(m7_stack_logo[[1]]),2)), paste0(m7_logo_elpd$m7[1]," [", m7_logo_elpd$m7[2],"]")),
+                  m7null = c(paste0(round_tidy(as.numeric(m7_stack_logo[[2]]),2)), paste0(m7_logo_elpd$m7_null[1]," [", m7_logo_elpd$m7_null[2],"]")),
+                  m8 = c(paste0(round_tidy(as.numeric(m8_stack_logo[[1]]),2)), paste0(m8_logo_elpd$m8[1]," [", m8_logo_elpd$m8[2],"]")),
+                  m8null = c(paste0(round_tidy(as.numeric(m8_stack_logo[[2]]),2)), paste0(m8_logo_elpd$m8_null[1]," [", m8_logo_elpd$m8_null[2],"]"))
+                  )
+
+# turn list to data frame and transpose
+logo_tab <- as.data.frame(logo_list)
+t_logo_tab <- t(as.data.frame(logo_list))
+t_logo_tab <- as.data.frame(t_logo_tab)
+
+# mark the favored model with an asterisk
+t_logo_tab$V2[t_logo_tab$V2=="0 [0]"] <- "*"
+
+# move first row to column names and remove duplicate row
+colnames(t_logo_tab) <- t_logo_tab[1,]
+t_logo_tab <- t_logo_tab[-1, ]
+
+# set row names
+rownames(t_logo_tab) <- c("\\texttt{m1}", "\\texttt{m1\\_null}", 
+                          "\\texttt{m2}", "\\texttt{m2\\_null}",
+                          "\\texttt{m3}", "\\texttt{m3\\_null}",
+                          "\\texttt{m4}", "\\texttt{m4\\_null}",
+                          "\\texttt{m5}", "\\texttt{m5\\_null}",
+                          "\\texttt{m6}", "\\texttt{m6\\_null}",
+                          "\\texttt{m7}", "\\texttt{m7\\_null}",
+                          "\\texttt{m8}", "\\texttt{m8\\_null}")
+
+# print table
+papaja::apa_table(t_logo_tab, escape = FALSE, font_size = "small", booktabs = TRUE, align = c("l", rep("c", 5)),
+                  placement = "h",
+                  caption = "Results from leave-one-group-out cross-validation (LOGO-CV).",
+                  note = "ELPD = differences in expected log posterior density between model pairs; SE = standard error of ELPD differences. Asterisks denote the best performing model in each model pair.")
+
+
+```
+
+```{r save-envir, include=FALSE, cache=TRUE}
+save.image("all_supps_mods.RData")
+
+```
+
+\newpage
+
+# Appendix D {-}
+
+```{r cite-package, results = 'asis'}
+cite_packages(dependencies = TRUE, cite.tidyverse = TRUE, output = "paragraph")
+```
+
+\newpage
+
+# Data Availability {-}
+\noindent Data and code to reproduce this manuscript is available at: \url{https://github.com/tbendixen/freelist-tutorial}.
+
+# References {-}
+
+<div id="refs"></div>
+
