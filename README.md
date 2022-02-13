@@ -3,7 +3,7 @@
 Repository for: 
 **Cognitive and cultural models in psychological science: A tutorial on modeling free-list data as a dependent variable in Bayesian regression**
 
-`freelist_tutorial.pdf`: preprint of main manuscript
+`freelist_tutorial.pdf`: preprint of main manuscript (also available at https://psyarxiv.com/4n2jm)
 
 `freelist_tutorial_appendix.pdf`: preprint of appendices
 
