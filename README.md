@@ -25,8 +25,10 @@ The `.Rmd` files require the following software and their dependencies:
  - `R`: https://cran.r-project.org/bin/windows/base/
  - `RStudio`: https://www.rstudio.com/products/rstudio/
  - `R Markdown`: https://rmarkdown.rstudio.com/
- - `renv`: 
+ - `renv`: https://cran.r-project.org/web/packages/renv/index.html
  - `papaja`: https://crsh.github.io/papaja_man/introduction.html
+
+Appendix D lists all `R` packages, their dependencies, and version number used for this project.
 
 Additional system details:
  - `version  R version 4.1.2 (2021-11-01)`
