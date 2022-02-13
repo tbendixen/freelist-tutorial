@@ -22,11 +22,11 @@ Note that due to the number of models, rendering the `.Rmd` files are quite comp
 intensive and may take a day or two, depending on hardware.
 
 The `.Rmd` files require the following software and their dependencies:
-	- `R`: https://cran.r-project.org/bin/windows/base/
-	- `RStudio`: https://www.rstudio.com/products/rstudio/
-	- `R Markdown`: https://rmarkdown.rstudio.com/
-	- `renv`: 
-	- `papaja`: https://crsh.github.io/papaja_man/introduction.html
+ - `R`: https://cran.r-project.org/bin/windows/base/
+ - `RStudio`: https://www.rstudio.com/products/rstudio/
+ - `R Markdown`: https://rmarkdown.rstudio.com/
+ - `renv`: 
+ - `papaja`: https://crsh.github.io/papaja_man/introduction.html
 
 Additional system details:
  - `version  R version 4.1.2 (2021-11-01)`
