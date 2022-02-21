@@ -19,7 +19,7 @@ main `freelist_tutorial.Rmd` script, which creates the file `all_main_mods.RData
 
 `grateful-refs.bib` and `tutorial-bib.bib` contain the bibliographies.
 
-Note that due to the number of models, rendering the `.Rmd` files are quite computationally 
+Note that due to the number of models, rendering the `.Rmd` files is quite computationally 
 intensive and may take a day or two, depending on hardware.
 
 The `.Rmd` files require the following software and their dependencies:
