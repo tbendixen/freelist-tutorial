@@ -35,7 +35,7 @@ Additional system details:
  - `version  R version 4.1.2 (2021-11-01)`
  - `os       Windows 10 x64 (build 19043)`
  - `system   x86_64, mingw32`
- - `rstudio  2021.09.2+382 Ghost Orchid (desktop)`
+ - `rstudio  2022.02.0+443 Prairie Trillium (desktop)`
  - `pandoc   2.17.1.1 @ C:/PROGRA~1/Pandoc/ (via rmarkdown)`
 
 Feedback is very welcome! Contact: tb@cas.au.dk
