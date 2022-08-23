@@ -5,7 +5,7 @@ Repository for:
 
 `freelist_tutorial.pdf`: preprint of main manuscript (also available at https://psyarxiv.com/4n2jm)
 
-`freelist_tutorial_appendix.pdf`: preprint of appendices
+`freelist_tutorial_supps.pdf`: preprint of supplementary document
 
 `FreeList_CERC_V1.0.csv` contains free-list data and `CERC Dataset (Wave 1) Version 6.0.csv`
 contains item scale data as well as various demographic information. See main repository for further
@@ -13,9 +13,8 @@ details (Wave 1): https://github.com/bgpurzycki/Evolution-of-Religion-and-Morali
 
 `freelist_tutorial.Rmd` reproduces the full main manuscript, including model fits, tables, and figures.
 
-`freelist_tutorial_appendix.Rmd` reproduces the appendices, including model fits, tables, and figures.
-Note that the appendix script depends on having fitted all models from the 
-main `freelist_tutorial.Rmd` script, which creates the file `all_main_mods.RData`.
+`freelist_tutorial_supps.Rmd` reproduces the supplementary document, including model fits, tables, and figures.
+Note that the supps script depends on having fitted all models from the main `freelist_tutorial.Rmd` script, which creates the file `all_main_mods.RData`.
 
 `grateful-refs.bib` and `tutorial-bib.bib` contain the bibliographies.
 
@@ -29,7 +28,7 @@ The `.Rmd` files require the following software and their dependencies:
  - `renv`: https://cran.r-project.org/web/packages/renv/index.html
  - `papaja`: https://crsh.github.io/papaja_man/introduction.html
 
-Appendix D lists all `R` packages, their dependencies, and version number used for this project.
+Supplementary Section D lists all `R` packages, their dependencies, and version number used for this project.
 
 Additional system details:
  - `version  R version 4.1.2 (2021-11-01)`
