@@ -1,5 +1,5 @@
 ---
-title: 'Supplementary Materials: Cognitive and cultural models in psychological science'
+title: 'Supplementary Document: Cognitive and cultural models in psychological science'
 shorttitle: 'Free-list tutorial (Supplementary)'
 author:
   - name: 'Theiss Bendixen'
@@ -263,17 +263,17 @@ knitr::opts_chunk$set(
 ```
 
 # Overview {-}
-In Appendix A, we implement an alternative likelihood to the zero-one inflated beta, namely the *ordered beta* distribution. For technical details and background, see @kubinec_2020 and for practical implementation, see the `R` package `ordbetareg` (\url{https://github.com/saudiwin/ordbetareg}) and source code for the present supplementary document. 
+In Supplementary Section A, we implement an alternative likelihood to the zero-one inflated beta, namely the *ordered beta* distribution. For technical details and background, see @kubinec_2020 and for practical implementation, see the `R` package `ordbetareg` (\url{https://github.com/saudiwin/ordbetareg}) and source code for the present supplementary document. 
 
-In Appendix B, we illustrate and implement alternative likelihood models that do not require transforming free-list data to salience scores, as discussed briefly in the main manuscript. We integrate key code chunks in the text but refer to the source code for full reproducible code. For simplicity, we restrict the examples to the Model 1 data and exclude field-site specific 'random effects' in all models.
+In Supplementary Section B, we illustrate and implement alternative likelihood models that do not require transforming free-list data to salience scores, as discussed briefly in the main manuscript. We integrate key code chunks in the text but refer to the source code for full reproducible code. For simplicity, we restrict the examples to the Model 1 data and exclude field-site specific 'random effects' in all models.
 
-In Appendix C, we first present plots for Models 3-8 (Figures \ref{fig:scat-plots-bgd-supps} and \ref{fig:scat-plots-lgd-supps}). Then, we present results for the reduced models, where only non-zero free-list responses are retained (Figures \ref{fig:scat-plots-gen-reduced}--\ref{fig:scat-plots-lgd-reduced}). Finally, we present results from leave-one-group-out cross-validation (Table \ref{tab:logo-tab}), an alternative model comparison to the approximate leave-one-out cross-validation as presented in the main manuscript.
+In Supplementary Section C, we first present plots for Models 3-8 (Figures \ref{fig:scat-plots-bgd-supps} and \ref{fig:scat-plots-lgd-supps}). Then, we present results for the reduced models, where only non-zero free-list responses are retained (Figures \ref{fig:scat-plots-gen-reduced}--\ref{fig:scat-plots-lgd-reduced}). Finally, we present results from leave-one-group-out cross-validation (Table \ref{tab:logo-tab}), an alternative model comparison to the approximate leave-one-out cross-validation as presented in the main manuscript.
 
-In Appendix D, we list `R` packages, their dependencies, and version number used for this project.
+In Supplementary Section D, we list `R` packages, their dependencies, and version number used for this project.
 
 \newpage
 
-# Appendix A: The ordered beta distribution {-}
+# Supplementary Section A: The ordered beta distribution {-}
 
 \noindent Here's an excerpt from @kubinec_2020 outlining the gist of the ordered beta:
 
@@ -832,7 +832,7 @@ papaja::apa_table(t_ob_coef_tab, escape = FALSE, font_size = "small", booktabs =
 
 \newpage
 
-# Appendix B: Alternative likelihood models for free-list data {-}
+# Supplementary Section B: Alternative likelihood models for free-list data {-}
 
 ## Presence/absence {-}
 
@@ -1358,7 +1358,7 @@ Note that we are only showing the hypothetical data and model structure for illu
 
 \newpage
 
-# Appendix C: Supplementary plots and tables {-}
+# Supplementary Section C: Supplementary plots and tables {-}
 
 ```{r scat-plots-bgd-supps, echo = FALSE, fig.height=10, fig.width=8, fig.cap = "Posterior predictions for each field site from Model 3 through 5 on the relationship between the moral interest scale items (*x*-axis) and salience of the corresponding free-listed code (*y*-axis). Lines are draws of expected values from the posterior predictive distributions. Raw data points are slightly jittered. Note the convergence issues in Model 5."}
 
@@ -1780,7 +1780,7 @@ save.image("all_supps_mods.RData")
 
 \newpage
 
-# Appendix D {-}
+# Supplementary Section D {-}
 
 ```{r cite-package, results = 'asis', cache = FALSE}
 cite_packages(dependencies = TRUE, cite.tidyverse = TRUE, output = "paragraph")
